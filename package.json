@@ -1,0 +1,82 @@
+{
+  "name": "hodo-desktop",
+  "version": "1.0.0",
+  "description": "Offline desktop package for the Hodo content editor.",
+  "author": {
+    "name": "Hodo",
+    "email": "maintainer@hodo.local"
+  },
+  "homepage": "https://hodo.local/",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "prepare:icons": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-icons.ps1",
+    "prepare:app": "node scripts/prepare-app.mjs",
+    "build:win": "npm run prepare:icons && npm run prepare:app && electron-builder --win nsis --x64",
+    "build:deb": "npm run prepare:icons && npm run prepare:app && electron-builder --linux dir --x64 && node scripts/build-deb.mjs",
+    "build:all": "npm run build:win && npm run build:deb"
+  },
+  "dependencies": {
+    "@wangeditor/editor": "5.1.23",
+    "prismjs": "1.30.0"
+  },
+  "devDependencies": {
+    "electron": "41.3.0",
+    "electron-builder": "26.8.1"
+  },
+  "build": {
+    "appId": "com.hodo.editor",
+    "productName": "Hodo",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "afterPack": "scripts/after-pack.cjs",
+    "files": [
+      "app/**/*",
+      "build/icon.png",
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "shortcutName": "Hodo"
+    },
+    "linux": {
+      "category": "Office",
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+  }
+}
