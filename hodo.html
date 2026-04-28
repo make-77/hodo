@@ -1,0 +1,4012 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>通用内容编辑器</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@wangeditor/editor@5.1.23/dist/css/style.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css"/>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/autoloader/prism-autoloader.min.js"></script>
+<script>
+window.__HODO_PRISM__ = window.Prism;
+if(window.__HODO_PRISM__ && window.__HODO_PRISM__.plugins && window.__HODO_PRISM__.plugins.autoloader){
+  window.__HODO_PRISM__.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs/components/';
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@wangeditor/editor@5.1.23/dist/index.min.js"></script>
+
+<script>
+if(window.__HODO_PRISM__){
+  window.Prism = window.__HODO_PRISM__;
+}
+</script>
+
+<style>
+:root{
+  --bg:#f5f7fb;
+  --paper:#ffffff;
+  --paper-2:#f8fafc;
+  --text:#0f172a;
+  --muted:#64748b;
+  --accent:#2563eb;
+  --accent-soft:#eef4ff;
+  --danger:#dc2626;
+  --border:#e5e7ef;
+  --shadow:0 10px 30px rgba(15,23,42,.06);
+  --shadow-soft:0 8px 24px rgba(15,23,42,.05);
+  --radius:16px;
+  --code-font-family:"Courier New","STZhongsong","华文中宋","Songti SC","SimSun","Noto Serif CJK SC",serif,monospace;
+  --code-font-size:16px;
+  --code-line-height:1.65;
+  --code-bg:#f6f8fb;
+  --code-fg:#0f172a;
+  --code-border:#e5e7ef;
+  --code-inline-bg:#eef2f7;
+}
+
+*{box-sizing:border-box}
+
+html,
+body{min-height:100%}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:16px/1.75 "STZhongsong","华文中宋","Songti SC","SimSun",serif;
+}
+
+button,
+input,
+select,
+textarea{
+  font-family:"STZhongsong","华文中宋","Songti SC","SimSun",serif;
+}
+
+.app{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+
+.topbar-inner{
+  max-width:1480px;
+  margin:0 auto;
+  padding:12px 20px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:14px;
+  align-items:center;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.brand-badge{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#2563eb,#38bdf8);
+  box-shadow:0 8px 18px rgba(37,99,235,.25);
+  flex:0 0 auto;
+}
+
+.brand-title{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+.brand-title strong{
+  font-size:20px;
+  line-height:1.25;
+}
+
+.brand-title span{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.25;
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.btn{
+  appearance:none;
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--text);
+  border-radius:12px;
+  padding:9px 13px;
+  min-height:38px;
+  cursor:pointer;
+  font-size:15px;
+  line-height:1.25;
+  transition:background .15s ease,border-color .15s ease,box-shadow .15s ease,transform .12s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  white-space:nowrap;
+}
+
+.btn:hover{
+  background:#f8fbff;
+  border-color:#bfd7ff;
+  box-shadow:0 2px 10px rgba(37,99,235,.12);
+  transform:translateY(-1px);
+}
+
+.btn:active{
+  transform:translateY(0);
+  box-shadow:none;
+}
+
+.btn.primary{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+
+.btn.primary:hover{
+  background:#1d4ed8;
+}
+
+.btn.danger{
+  color:var(--danger);
+}
+
+.btn.small{
+  padding:6px 9px;
+  min-height:32px;
+  font-size:13px;
+  border-radius:10px;
+}
+
+.layout{
+  width:100%;
+  max-width:1480px;
+  margin:18px auto;
+  padding:0 20px 28px;
+  display:grid;
+  grid-template-columns:340px 1fr;
+  gap:18px;
+  align-items:start;
+}
+
+.layout.previewing{
+  max-width:1320px;
+  grid-template-columns:1fr;
+}
+
+.layout.previewing .side{
+  display:none;
+}
+
+.panel{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.side{
+  position:sticky;
+  top:78px;
+  max-height:calc(100vh - 96px);
+  overflow:auto;
+}
+
+.panel-hd{
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  background:#fff;
+}
+
+.panel-hd h2{
+  margin:0;
+  font-size:20px;
+  line-height:1.3;
+}
+
+.panel-body{
+  padding:16px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  margin-bottom:14px;
+}
+
+.field label{
+  font-size:15px;
+  color:#334155;
+  font-weight:700;
+}
+
+.field input{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px 12px;
+  font-size:17px;
+  outline:none;
+  background:#fff;
+}
+
+.field input:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 3px rgba(37,99,235,.14);
+}
+
+.field input[type="date"]{
+  height:44px;
+  line-height:1.4;
+  font-family:"Courier New","Microsoft YaHei","微软雅黑",sans-serif;
+}
+
+.quick-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+
+.mode-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:#f1f5f9;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:4px;
+  gap:4px;
+  margin-bottom:14px;
+}
+
+.mode-tab{
+  border:0;
+  background:transparent;
+  border-radius:10px;
+  padding:9px 8px;
+  cursor:pointer;
+  color:#475569;
+  font-size:15px;
+}
+
+.mode-tab.active{
+  background:#fff;
+  color:var(--accent);
+  font-weight:700;
+  box-shadow:0 2px 8px rgba(15,23,42,.06);
+}
+
+.toc{
+  margin-top:14px;
+  border-top:1px dashed var(--border);
+  padding-top:14px;
+}
+
+.toc-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.toc-title{
+  font-size:15px;
+  font-weight:700;
+  color:#334155;
+}
+
+.toc-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.toc-item{
+  display:grid;
+  grid-template-columns:auto auto 1fr;
+  gap:6px;
+  align-items:center;
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:12px;
+  padding:6px;
+  position:relative;
+  transition:border-color .15s ease,background .15s ease,box-shadow .15s ease,opacity .15s ease;
+}
+
+.toc-item:hover{
+  border-color:#bfdbfe;
+  background:#f8fbff;
+}
+
+.toc-item.dragging{
+  opacity:.55;
+}
+
+.toc-item.drag-over{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+.toc-drag{
+  width:22px;
+  height:28px;
+  border-radius:8px;
+  color:#94a3b8;
+  cursor:grab;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  user-select:none;
+  font-size:15px;
+  line-height:1;
+}
+
+.toc-drag:hover{
+  background:#eef2f7;
+  color:#475569;
+}
+
+.toc-drag:active{
+  cursor:grabbing;
+}
+
+.toc-jump{
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  padding:0;
+  width:28px;
+  height:28px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.toc-jump:hover{
+  background:#f1f5f9;
+}
+
+.toc-no{
+  width:24px;
+  height:24px;
+  border-radius:8px;
+  background:var(--accent-soft);
+  color:var(--accent);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:700;
+  flex:0 0 auto;
+}
+
+.toc-title-input{
+  min-width:0;
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#0f172a;
+  font-size:15px;
+  line-height:1.35;
+  outline:none;
+  padding:6px;
+  padding-right:8px;
+  border-radius:8px;
+  transition:padding-right .15s ease,background .15s ease,box-shadow .15s ease;
+}
+
+.toc-item:hover .toc-title-input,
+.toc-title-input:focus{
+  padding-right:48px;
+}
+
+.toc-title-input:focus{
+  background:#fff;
+  box-shadow:0 0 0 2px rgba(37,99,235,.12);
+}
+
+.toc-actions{
+  position:absolute;
+  right:6px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  gap:4px;
+  opacity:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(248,251,255,0),#f8fbff 18px,#f8fbff);
+  padding-left:22px;
+  transition:opacity .15s ease;
+}
+
+.toc-item:hover .toc-actions,
+.toc-item:focus-within .toc-actions{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.toc-btn{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:8px;
+  min-width:28px;
+  height:28px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.toc-btn:hover{
+  background:#f8fafc;
+  border-color:#bfdbfe;
+}
+
+.toc-btn.danger{
+  color:var(--danger);
+}
+
+.toc-empty{
+  border:1px dashed #cbd5e1;
+  background:#f8fafc;
+  color:#64748b;
+  border-radius:12px;
+  padding:14px;
+  font-size:14px;
+  text-align:center;
+}
+
+.main{
+  min-width:0;
+}
+
+.page-card{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.page-card.previewing{
+  overflow:visible;
+}
+
+.page-head{
+  padding:22px 24px 14px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,#fff,#fbfdff);
+}
+
+.page-head h1{
+  margin:0;
+  text-align:center;
+  font-size:36px;
+  line-height:1.25;
+  font-weight:700;
+}
+
+.subtitle{
+  margin:8px 0 0;
+  text-align:center;
+  color:var(--muted);
+  font-size:16px;
+}
+
+.page-body{
+  padding:20px 24px 28px;
+}
+
+.items{
+  counter-reset:item;
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+
+.item{
+  counter-increment:item;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:#fff;
+  margin-bottom:16px;
+  overflow:hidden;
+  scroll-margin-top:92px;
+}
+
+.item.flash{
+  animation:flash .9s ease;
+}
+
+@keyframes flash{
+  0%{box-shadow:0 0 0 4px rgba(37,99,235,.18)}
+  100%{box-shadow:none}
+}
+
+.item-top{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  align-items:start;
+  padding:14px;
+  background:#fbfdff;
+  border-bottom:1px solid var(--border);
+}
+
+.item-no{
+  min-width:48px;
+  height:42px;
+  border-radius:12px;
+  background:var(--accent-soft);
+  color:var(--accent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:20px;
+  font-variant-numeric:tabular-nums;
+}
+
+.item-no::before{
+  content:counter(item);
+}
+
+.item-main-fields{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.title-input{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px 12px;
+  font-size:24px;
+  line-height:1.25;
+  font-weight:700;
+  outline:none;
+}
+
+.title-input:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 3px rgba(37,99,235,.14);
+}
+
+.date-line{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+  color:var(--muted);
+}
+
+.date-line input{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 10px;
+  font:15px/1.4 "Courier New","Microsoft YaHei","微软雅黑",sans-serif;
+  height:40px;
+  min-width:150px;
+}
+
+.item-content{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.sec{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-width:0;
+}
+
+.sec-hd{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.label{
+  color:#475569;
+  font-size:17px;
+  font-weight:700;
+}
+
+.remark-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.remark-item{
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:#fff;
+  overflow:hidden;
+}
+
+.remark-head{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  padding:8px 10px;
+  background:#f8fafc;
+  border-bottom:1px solid var(--border);
+}
+
+.we-toolbar{
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+  padding:4px;
+  margin-bottom:8px;
+  display:none;
+  position:sticky;
+  top:76px;
+  z-index:5;
+}
+
+.editor-wrap.focused .we-toolbar{
+  display:block;
+}
+
+.we-editor{
+  min-height:260px;
+  border:1px dashed #cbd5e1;
+  border-radius:14px;
+  padding:10px;
+  background:#fff;
+  font-family:"STZhongsong","华文中宋","Songti SC","SimSun",serif;
+}
+
+.we-editor .w-e-scroll{
+  min-height:260px;
+}
+
+.remark-item .we-editor{
+  border:0;
+  border-radius:0;
+  min-height:180px;
+}
+
+.remark-item .we-editor .w-e-scroll{
+  min-height:180px;
+}
+
+.sec-body .we-editor{
+  font-size:24px;
+}
+
+.sec-remark .we-editor{
+  font-size:16px;
+  font-family:"FangSong","仿宋","FangSong_GB2312","Songti SC","SimSun",serif;
+}
+
+.single-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.hidden{
+  display:none !important;
+}
+
+.latin{
+  font-family:"Courier New",Courier,monospace !important;
+}
+
+.page-body,
+.we-editor{
+  word-break:break-word;
+  overflow-wrap:anywhere;
+}
+
+.we-editor :where(img,video,iframe){
+  max-width:100%;
+  height:auto;
+  display:block;
+  border-radius:8px;
+}
+
+.we-editor :where(table){
+  display:block;
+  max-width:100%;
+  overflow-x:auto;
+  border-collapse:collapse;
+}
+
+table,
+th,
+td{
+  border:1px solid #e5e7eb;
+}
+
+th,
+td{
+  padding:8px;
+}
+
+.we-editor :not(pre):not(code) a{
+  word-break:break-all;
+  overflow-wrap:anywhere;
+}
+
+.we-editor pre,
+.w-e-text pre,
+.preview-doc pre{
+  font-family:var(--code-font-family) !important;
+  font-size:var(--code-font-size) !important;
+  line-height:var(--code-line-height) !important;
+  background:var(--code-bg) !important;
+  color:var(--code-fg);
+  border:1px solid var(--code-border) !important;
+  border-radius:12px !important;
+  padding:12px 14px !important;
+  margin:10px 0 !important;
+  white-space:pre !important;
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  tab-size:2;
+  -moz-tab-size:2;
+  font-variant-ligatures:none !important;
+  -webkit-font-smoothing:antialiased;
+}
+
+.we-editor pre>code,
+.w-e-text pre>code,
+.preview-doc pre>code{
+  font:inherit !important;
+  background:transparent !important;
+  padding:0 !important;
+  border:0 !important;
+}
+
+.we-editor :not(pre)>code,
+.w-e-text :not(pre)>code,
+.preview-doc :not(pre)>code{
+  font-family:var(--code-font-family) !important;
+  font-size:calc(var(--code-font-size) - 1px) !important;
+  line-height:1.6 !important;
+  color:var(--code-fg);
+  background:var(--code-inline-bg) !important;
+  border:1px solid var(--code-border) !important;
+  border-radius:.4em !important;
+  padding:.1em .35em !important;
+  font-variant-ligatures:none !important;
+}
+
+[data-w-e-type="code"] pre{
+  background:var(--code-bg) !important;
+  border:1px solid var(--code-border) !important;
+  border-radius:12px !important;
+}
+
+.preview-doc{
+  max-width:1260px;
+  margin:0 auto;
+  color:#0f172a;
+  word-break:break-word;
+  overflow-wrap:anywhere;
+}
+
+.preview-doc-shell{
+  display:grid;
+  grid-template-columns:minmax(0,980px);
+  gap:18px;
+  align-items:stretch;
+  justify-content:center;
+}
+
+.preview-doc-shell.no-toc{
+  grid-template-columns:minmax(0,980px);
+}
+
+.preview-toc-rail{
+  min-width:0;
+  align-self:stretch;
+  width:100%;
+}
+
+.preview-main-flow{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.preview-hero{
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at top left, rgba(37,99,235,.10), transparent 34%),
+    linear-gradient(180deg,#ffffff,#fbfdff);
+  box-shadow:var(--shadow-soft);
+  padding:28px 28px 22px;
+  overflow:hidden;
+}
+
+.preview-title-card{
+  text-align:center;
+}
+
+.preview-title-card h1{
+  margin:0;
+  font-size:40px;
+  line-height:1.25;
+  letter-spacing:.02em;
+}
+
+.preview-date-card{
+  margin:12px auto 0;
+  width:max-content;
+  max-width:100%;
+  color:#64748b;
+  border:1px solid #e6edf8;
+  background:#ffffff;
+  border-radius:999px;
+  padding:6px 16px;
+  font-size:16px;
+}
+
+.preview-floating-toc{
+  position:sticky;
+  top:var(--preview-toc-top, 88px);
+  align-self:start;
+  width:100%;
+  max-height:calc(100vh - var(--preview-toc-top, 88px) - 24px);
+  overflow:auto;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:#ffffff;
+  box-shadow:0 8px 24px rgba(15,23,42,.08);
+  padding:14px 16px;
+  z-index:30;
+}
+
+.preview-floating-toc .preview-block-title{
+  margin-bottom:8px;
+  font-size:16px;
+}
+
+.preview-floating-toc ol{
+  margin:0;
+  padding-left:22px;
+  font-size:15px;
+  line-height:1.75;
+}
+
+.preview-floating-toc li{
+  margin:3px 0;
+}
+
+.preview-floating-toc a{
+  color:#334155;
+  text-decoration:none;
+  border-bottom:1px dashed transparent;
+}
+
+.preview-floating-toc a:hover{
+  color:var(--accent);
+  border-bottom-color:var(--accent);
+}
+
+.preview-quick-toc{
+  position:fixed;
+  right:18px;
+  top:calc(var(--preview-toc-top, 88px) + 10px);
+  bottom:auto;
+  transform:none;
+  z-index:120;
+  font-family:"STZhongsong","华文中宋","Songti SC","SimSun",serif;
+}
+
+.preview-quick-toc summary{
+  list-style:none;
+  cursor:pointer;
+  user-select:none;
+  border:1px solid rgba(37,99,235,.34);
+  border-radius:14px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0)),
+    var(--accent);
+  color:#fff;
+  box-shadow:0 12px 30px rgba(37,99,235,.30);
+  padding:10px 13px;
+  min-width:76px;
+  text-align:center;
+  font-size:15px;
+  font-weight:700;
+  line-height:1.3;
+  letter-spacing:0;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+}
+
+.preview-quick-toc summary::before{
+  content:"☰";
+  display:inline-block;
+  margin-right:6px;
+  font-size:13px;
+  line-height:1;
+  opacity:.9;
+}
+
+.preview-quick-toc summary:hover,
+.preview-quick-toc[open] summary{
+  transform:translateX(-2px);
+  box-shadow:0 16px 36px rgba(37,99,235,.34);
+}
+
+.preview-quick-toc summary::-webkit-details-marker{
+  display:none;
+}
+
+.preview-quick-toc-panel{
+  position:absolute;
+  right:0;
+  top:calc(100% + 10px);
+  bottom:auto;
+  transform:none;
+  width:clamp(180px, 28vw, 300px);
+  max-height:min(58vh, 460px);
+  overflow:auto;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 16px 40px rgba(15,23,42,.18);
+  padding:14px 16px;
+}
+
+.preview-quick-toc:not([open]):not(:hover):not(:focus-within) .preview-quick-toc-panel{
+  display:none;
+}
+
+.preview-quick-toc .preview-block-title{
+  margin-bottom:8px;
+  font-size:16px;
+}
+
+.preview-quick-toc ol{
+  margin:0;
+  padding-left:22px;
+  font-size:15px;
+  line-height:1.75;
+}
+
+.preview-quick-toc li{
+  margin:3px 0;
+}
+
+.preview-quick-toc a{
+  color:#334155;
+  text-decoration:none;
+  border-bottom:1px dashed transparent;
+}
+
+.preview-quick-toc a:hover{
+  color:var(--accent);
+  border-bottom-color:var(--accent);
+}
+
+.preview-print-toc{
+  display:none;
+}
+
+.preview-block-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 0 10px;
+  color:#334155;
+  font-size:18px;
+  line-height:1.35;
+  font-weight:700;
+}
+
+.preview-block-title::before{
+  content:"";
+  width:4px;
+  height:18px;
+  border-radius:999px;
+  background:var(--accent);
+}
+
+.preview-items{
+  counter-reset:item;
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.preview-item{
+  counter-increment:item;
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:#ffffff;
+  box-shadow:var(--shadow-soft);
+  padding:20px;
+  scroll-margin-top:92px;
+}
+
+.preview-item-head{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:14px;
+  align-items:start;
+  margin-bottom:14px;
+}
+
+.preview-index{
+  min-width:46px;
+  height:46px;
+  border-radius:15px;
+  background:var(--accent-soft);
+  color:var(--accent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+
+.preview-index::before{
+  content:counter(item);
+}
+
+.preview-title{
+  margin:0;
+  font-size:32px;
+  line-height:1.25;
+  font-weight:700;
+}
+
+.preview-time{
+  margin-top:8px;
+  display:inline-flex;
+  color:#64748b;
+  background:#f8fafc;
+  border:1px solid #e6edf8;
+  border-radius:999px;
+  padding:4px 12px;
+  font-family:"Courier New",Courier,monospace;
+  font-size:16px;
+}
+
+.preview-body-block{
+  margin-top:12px;
+}
+
+.preview-body-block:first-child{
+  margin-top:0;
+}
+
+.preview-body-block > .preview-section-label,
+.preview-remarks-block > .preview-section-label{
+  margin:0 0 8px;
+  padding-left:2px;
+  color:#475569;
+  font-size:15px;
+  line-height:1.35;
+  font-weight:700;
+}
+
+.preview-section{
+  border:1px solid #e8edf5;
+  border-radius:18px;
+  background:#fbfdff;
+  padding:16px;
+}
+
+.preview-body{
+  font-family:"STZhongsong","华文中宋","Songti SC","SimSun",serif;
+  font-size:24px;
+  line-height:1.85;
+}
+
+.preview-remarks-block{
+  margin-top:12px;
+}
+
+.preview-remark-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:8px;
+}
+
+.preview-remark{
+  border:1px solid #e6edf8;
+  border-left:4px solid #bfdbfe;
+  border-radius:14px;
+  background:#f8fafc;
+  padding:12px 14px;
+  font-size:16px;
+  line-height:1.8;
+  font-family:"FangSong","仿宋","FangSong_GB2312","Songti SC","SimSun",serif;
+}
+
+.preview-single{
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:#fff;
+  box-shadow:var(--shadow-soft);
+  padding:20px;
+}
+
+.preview-doc :where(img,video,iframe){
+  max-width:100%;
+  height:auto;
+  display:block;
+  border-radius:10px;
+}
+
+.preview-doc :where(table){
+  display:block;
+  max-width:100%;
+  overflow-x:auto;
+  border-collapse:collapse;
+}
+
+.preview-doc :not(pre):not(code) a{
+  word-break:break-all;
+  overflow-wrap:anywhere;
+}
+
+.copyable{
+  position:relative;
+}
+
+.copy-region-btn{
+  position:absolute;
+  right:10px;
+  top:10px;
+  z-index:4;
+  border:1px solid var(--border);
+  background:#fff;
+  color:#334155;
+  border-radius:9px;
+  padding:4px 9px;
+  font-size:12px;
+  line-height:1.35;
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  box-shadow:0 3px 10px rgba(15,23,42,.08);
+  transition:opacity .15s ease,background .15s ease,border-color .15s ease;
+}
+
+.copyable:hover > .copy-region-btn{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.copy-region-btn:hover{
+  background:#f8fbff;
+  border-color:#bfdbfe;
+}
+
+.code-copy-wrap{
+  position:relative;
+}
+
+.code-copy-btn{
+  position:absolute;
+  right:8px;
+  top:8px;
+  z-index:3;
+  border:1px solid var(--border);
+  background:#fff;
+  color:#334155;
+  border-radius:8px;
+  padding:4px 8px;
+  font-size:12px;
+  line-height:1.35;
+  cursor:pointer;
+  opacity:.18;
+  transition:opacity .15s ease,background .15s ease,border-color .15s ease;
+}
+
+.code-copy-wrap:hover > .code-copy-btn{
+  opacity:1;
+}
+
+.code-copy-btn:hover{
+  background:#f8fbff;
+  border-color:#bfdbfe;
+}
+
+.empty-hint{
+  border:1px dashed #cbd5e1;
+  background:#f8fafc;
+  color:#64748b;
+  border-radius:16px;
+  padding:28px;
+  text-align:center;
+  font-size:18px;
+}
+
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:1000;
+  background:#0f172a;
+  color:#fff;
+  border-radius:12px;
+  padding:10px 14px;
+  font-size:14px;
+  box-shadow:0 10px 30px rgba(15,23,42,.22);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(10px);
+  transition:opacity .2s ease,transform .2s ease;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.start-mask{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(15,23,42,.38);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.start-dialog{
+  width:min(420px,100%);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(15,23,42,.25);
+  padding:24px;
+}
+
+.start-dialog h3{
+  margin:0 0 8px;
+  font-size:22px;
+  line-height:1.35;
+}
+
+.start-dialog p{
+  margin:0 0 18px;
+  color:var(--muted);
+  font-size:15px;
+}
+
+.start-actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+
+.w-e-full-screen-container,
+[class*="w-e-full"][class*="screen"],
+div[class*="w-e-"][style*="position: fixed"]{
+  z-index:2147483647 !important;
+}
+
+@media (max-width:900px){
+  .preview-doc{
+    max-width:980px;
+  }
+
+  .preview-doc-shell,
+  .preview-doc-shell.no-toc{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .preview-toc-rail{
+    order:-1;
+    position:sticky;
+    top:var(--preview-toc-top, 88px);
+    z-index:30;
+    align-self:stretch;
+  }
+
+  .preview-floating-toc{
+    position:static;
+    width:auto;
+    max-height:min(50vh, calc(100vh - var(--preview-toc-top, 88px) - 24px));
+    overflow:auto;
+  }
+}
+
+@media (max-width:1120px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .side{
+    position:static;
+    max-height:none;
+  }
+
+  .topbar-inner{
+    grid-template-columns:1fr;
+  }
+
+  .top-actions{
+    justify-content:flex-start;
+  }
+}
+
+@media (max-width:720px){
+  .layout{
+    padding:0 12px 24px;
+    margin-top:12px;
+  }
+
+  .topbar-inner{
+    padding:10px 12px;
+  }
+
+  .page-head{
+    padding:18px 14px 12px;
+  }
+
+  .page-body{
+    padding:14px;
+  }
+
+  .page-head h1,
+  .preview-title-card h1{
+    font-size:28px;
+  }
+
+  .item-top{
+    grid-template-columns:1fr;
+  }
+
+  .item-no{
+    display:none;
+  }
+
+  .preview-item-head{
+    grid-template-columns:1fr;
+  }
+
+  .preview-index{
+    width:46px;
+  }
+
+  .preview-title{
+    font-size:26px;
+  }
+
+  .preview-floating-toc{
+    max-height:min(42vh, calc(100vh - var(--preview-toc-top, 88px) - 16px));
+  }
+
+  .preview-quick-toc-panel{
+    right:0;
+    width:min(300px, calc(100vw - 28px));
+    max-height:min(56vh, 430px);
+  }
+}
+
+@media print{
+  body{
+    background:#fff !important;
+  }
+
+  body *{
+    display:none !important;
+  }
+
+  body::before{
+    content:"此页面已设置为禁止打印";
+    display:block !important;
+    margin:20vh auto 0;
+    max-width:520px;
+    padding:24px 28px;
+    color:#0f172a;
+    border:1px solid #e5e7ef;
+    border-radius:16px;
+    text-align:center;
+    font:700 22px/1.5 "STZhongsong","华文中宋","Songti SC","SimSun",serif;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <div class="brand-title">
+          <strong>通用内容编辑器</strong>
+          <span id="autosaveText">自动保存已启用</span>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn" id="btnEditView" type="button">编辑</button>
+        <button class="btn" id="btnPreviewView" type="button">预览</button>
+        <button class="btn" id="btnSaveJSON" type="button">保存草稿</button>
+        <button class="btn" id="btnLoadJSON" type="button">导入草稿</button>
+        <button class="btn primary" id="btnExportHTML" type="button">导出 HTML</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel side">
+      <div class="panel-hd">
+        <h2>页面设置</h2>
+      </div>
+
+      <div class="panel-body">
+        <div class="field">
+          <label for="titleInput">页面主标题</label>
+          <input id="titleInput" type="text" placeholder="例如：项目报告"/>
+        </div>
+
+        <div class="field">
+          <label for="pageDate">页面日期</label>
+          <input id="pageDate" type="date"/>
+        </div>
+
+        <div class="quick-row">
+          <button class="btn small" id="btnToday" type="button">今天</button>
+          <button class="btn small" id="btnClearDate" type="button">清空日期</button>
+        </div>
+
+        <div class="mode-tabs" role="tablist" aria-label="编辑模式">
+          <button class="mode-tab active" id="tabOutline" type="button">大纲模式</button>
+          <button class="mode-tab" id="tabSingle" type="button">正文模式</button>
+        </div>
+
+        <div class="toc" id="sideToc"></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="page-card">
+        <div class="page-head" id="pageHead">
+          <h1 id="pageTitle">页面标题</h1>
+          <p class="subtitle" id="pageSubtitle">页面日期</p>
+        </div>
+
+        <div class="page-body">
+          <div id="editorRoot">
+            <ol class="items" id="outlineList"></ol>
+
+            <section class="single-wrap hidden" id="singleEditor">
+              <div class="sec sec-body">
+                <div class="sec-hd">
+                  <div class="label">正文（必填）</div>
+                </div>
+                <div class="editor-wrap" id="singleBodyWrap"></div>
+              </div>
+
+              <div class="sec sec-remark">
+                <div class="sec-hd">
+                  <div class="label">备注（可选）</div>
+                  <button class="btn small" data-act="single-add-remark" type="button">＋ 添加备注</button>
+                </div>
+                <div class="remark-list" id="singleRemarkList"></div>
+              </div>
+            </section>
+          </div>
+
+          <div id="previewRoot" class="hidden">
+            <div class="preview-doc" id="previewPage"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const $ = (s, p=document) => p.querySelector(s);
+  const $$ = (s, p=document) => Array.from(p.querySelectorAll(s));
+  const { createEditor, createToolbar } = window.wangEditor;
+
+  const STORAGE_KEY = 'hodo_editor_autosave_v9';
+
+  const state = {
+    mode:'outline',
+    view:'edit',
+    singlePairs:null,
+    autosaveTimer:null,
+    previewTimer:null,
+    itemSeq:0,
+    suspendAutosave:false,
+    dragIndex:null
+  };
+
+  const els = {
+    titleInput:$('#titleInput'),
+    pageDate:$('#pageDate'),
+    layout:$('.layout'),
+    pageCard:$('.page-card'),
+    pageHead:$('#pageHead'),
+    pageTitle:$('#pageTitle'),
+    pageSubtitle:$('#pageSubtitle'),
+    outlineList:$('#outlineList'),
+    singleEditor:$('#singleEditor'),
+    singleBodyWrap:$('#singleBodyWrap'),
+    singleRemarkList:$('#singleRemarkList'),
+    editorRoot:$('#editorRoot'),
+    previewRoot:$('#previewRoot'),
+    previewPage:$('#previewPage'),
+    sideToc:$('#sideToc'),
+    autosaveText:$('#autosaveText'),
+    toast:$('#toast')
+  };
+
+  const toolbarKeys = [
+    'undo','redo','|','headerSelect','fontFamily','fontSize',
+    'bold','italic','underline','through','color','bgColor','clearStyle','|',
+    'bulletedList','numberedList','todo','indent','delIndent','lineHeight',
+    'justifyLeft','justifyCenter','justifyRight','justifyJustify','|',
+    'insertLink','editLink','unLink','viewLink','|',
+    'insertImage','insertVideo','insertTable','codeBlock','blockquote','divider','emotion','|',
+    'fullScreen'
+  ];
+
+  function pad(n){
+    return String(n).padStart(2,'0');
+  }
+
+  function todayISO(d = new Date()){
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  }
+
+  function fmtDateCN(iso){
+    if(!iso) return '';
+    const arr = iso.split('-');
+    if(arr.length !== 3) return '';
+    return `${arr[0]} 年 ${Number(arr[1])} 月 ${Number(arr[2])} 日`;
+  }
+
+  function escapeHtml(s){
+    return String(s || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[c]));
+  }
+
+  function escapeAttr(s){
+    return String(s || '').replace(/["&<>]/g, c => ({
+      '"':'&quot;',
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;'
+    }[c]));
+  }
+
+  function filenameSafe(name){
+    return String(name || '页面标题').trim().replace(/[\/\\:*?"<>|]/g, '_') || '页面标题';
+  }
+
+  function toast(msg){
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => els.toast.classList.remove('show'), 1600);
+  }
+
+  function setAutosaveText(text){
+    els.autosaveText.textContent = text;
+  }
+
+  function editorTextEmpty(editor){
+    try{
+      return editor.getText().trim() === '';
+    }catch(e){
+      return true;
+    }
+  }
+
+  function normalizeRemarks(data){
+    const out = [];
+
+    if(data && Array.isArray(data.remarks)){
+      data.remarks.forEach(item => {
+        if(typeof item === 'string'){
+          out.push({ html:item });
+          return;
+        }
+
+        const html = item?.html || item?.remark || item?.body || '';
+        if(html || item?.empty === false){
+          out.push({ html });
+        }
+      });
+    }
+
+    if(out.length === 0 && data && data.remark && !data.remarkEmpty){
+      out.push({ html:data.remark });
+    }
+
+    return out;
+  }
+
+  function syncHeader(){
+    const title = els.titleInput.value.trim() || '页面标题';
+    els.pageTitle.textContent = title;
+    els.pageSubtitle.textContent = fmtDateCN(els.pageDate.value) || '页面日期';
+    updateToc();
+    scheduleAutosave();
+    schedulePreview();
+  }
+
+  function makeEditor(wrapper, html){
+    wrapper.innerHTML = '';
+
+    const toolbarEl = document.createElement('div');
+    toolbarEl.className = 'we-toolbar';
+
+    const editorEl = document.createElement('div');
+    editorEl.className = 'we-editor';
+
+    wrapper.appendChild(toolbarEl);
+    wrapper.appendChild(editorEl);
+
+    const editor = createEditor({
+      selector:editorEl,
+      html:html || '',
+      config:{
+        placeholder:'在此编辑…',
+        onChange(){
+          scheduleAutosave();
+          schedulePreview();
+        },
+        MENU_CONF:{
+          uploadImage:{
+            base64LimitSize:20 * 1024 * 1024,
+            customUpload(file, insertFn){
+              const reader = new FileReader();
+              reader.onload = () => insertFn(reader.result);
+              reader.readAsDataURL(file);
+            }
+          },
+          uploadVideo:{
+            customUpload(file, insertFn){
+              const reader = new FileReader();
+              reader.onload = () => insertFn(reader.result);
+              reader.readAsDataURL(file);
+            }
+          }
+        }
+      },
+      mode:'default'
+    });
+
+    createToolbar({
+      editor,
+      selector:toolbarEl,
+      config:{ toolbarKeys },
+      mode:'default'
+    });
+
+    editorEl.addEventListener('focusin', () => {
+      $$('.editor-wrap.focused').forEach(el => el.classList.remove('focused'));
+      wrapper.classList.add('focused');
+    });
+
+    return { editor, toolbarEl, editorEl, wrapper };
+  }
+
+  function destroyPair(pair){
+    if(!pair) return;
+    try{
+      pair.editor.destroy();
+    }catch(e){}
+  }
+
+  function addRemarkToItem(li, html, focus){
+    if(!li || !li._pairs) return null;
+
+    const list = $('.remark-list', li);
+    const remarkItem = document.createElement('div');
+    remarkItem.className = 'remark-item';
+
+    remarkItem.innerHTML = `
+      <div class="remark-head">
+        <button class="btn small danger" data-act="del-remark" type="button">删除备注</button>
+      </div>
+      <div class="editor-wrap remark-wrap"></div>
+    `;
+
+    list.appendChild(remarkItem);
+
+    const pair = makeEditor($('.remark-wrap', remarkItem), html || '');
+    li._pairs.remarks.push({ el:remarkItem, pair });
+
+    scheduleAutosave();
+    schedulePreview();
+
+    if(focus){
+      setTimeout(() => {
+        try{ pair.editor.focus(); }catch(e){}
+      }, 0);
+    }
+
+    return remarkItem;
+  }
+
+  function addSingleRemark(html, focus){
+    ensureSingleEditors();
+
+    const remarkItem = document.createElement('div');
+    remarkItem.className = 'remark-item';
+
+    remarkItem.innerHTML = `
+      <div class="remark-head">
+        <button class="btn small danger" data-act="single-del-remark" type="button">删除备注</button>
+      </div>
+      <div class="editor-wrap remark-wrap"></div>
+    `;
+
+    els.singleRemarkList.appendChild(remarkItem);
+
+    const pair = makeEditor($('.remark-wrap', remarkItem), html || '');
+    state.singlePairs.remarks.push({ el:remarkItem, pair });
+
+    scheduleAutosave();
+    schedulePreview();
+
+    if(focus){
+      setTimeout(() => {
+        try{ pair.editor.focus(); }catch(e){}
+      }, 0);
+    }
+
+    return remarkItem;
+  }
+
+  function ensureSingleEditors(data){
+    if(state.singlePairs) return state.singlePairs;
+
+    state.singlePairs = {
+      body:makeEditor(els.singleBodyWrap, data?.body || ''),
+      remarks:[]
+    };
+
+    normalizeRemarks(data || {}).forEach(item => {
+      addSingleRemark(item.html, false);
+    });
+
+    return state.singlePairs;
+  }
+
+  function createItem(data){
+    const d = data || {};
+    const li = document.createElement('li');
+    li.className = 'item';
+    li.dataset.uid = `item_${++state.itemSeq}`;
+
+    li.innerHTML = `
+      <div class="item-top">
+        <div class="item-no" aria-hidden="true"></div>
+
+        <div class="item-main-fields">
+          <input class="title-input" type="text" placeholder="标题（必填）" value="${escapeAttr(d.title || '')}"/>
+
+          <div class="date-line">
+            <span>时间范围</span>
+            <input class="date-start" type="date" value="${escapeAttr(d.start || '')}"/>
+            <span class="latin">~</span>
+            <input class="date-end" type="date" value="${escapeAttr(d.end || '')}"/>
+            <button class="btn small" data-act="clear-date" type="button">清空时间</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-content">
+        <div class="sec sec-body">
+          <div class="sec-hd">
+            <div class="label">正文（必填）</div>
+          </div>
+          <div class="editor-wrap body-wrap"></div>
+        </div>
+
+        <div class="sec sec-remark">
+          <div class="sec-hd">
+            <div class="label">备注（可选）</div>
+            <button class="btn small" data-act="add-remark" type="button">＋ 添加备注</button>
+          </div>
+          <div class="remark-list"></div>
+        </div>
+      </div>
+    `;
+
+    els.outlineList.appendChild(li);
+
+    const bodyPair = makeEditor($('.body-wrap', li), d.body || '');
+    li._pairs = { body:bodyPair, remarks:[] };
+
+    normalizeRemarks(d).forEach(item => {
+      addRemarkToItem(li, item.html, false);
+    });
+
+    const titleInput = $('.title-input', li);
+    const startInput = $('.date-start', li);
+    const endInput = $('.date-end', li);
+
+    titleInput.addEventListener('input', () => {
+      updateToc();
+      scheduleAutosave();
+      schedulePreview();
+    });
+
+    function fixDateOrder(){
+      if(startInput.value && endInput.value && endInput.value < startInput.value){
+        endInput.value = startInput.value;
+        toast('结束日期已自动校正');
+      }
+      scheduleAutosave();
+      schedulePreview();
+    }
+
+    startInput.addEventListener('change', fixDateOrder);
+    endInput.addEventListener('change', fixDateOrder);
+
+    updateToc();
+    scheduleAutosave();
+    schedulePreview();
+
+    return li;
+  }
+
+  function collectItemRemarks(li){
+    const pairs = li._pairs?.remarks || [];
+
+    return pairs.map(item => {
+      const editor = item.pair?.editor;
+      const html = editor ? editor.getHtml() : '';
+      const empty = editor ? editorTextEmpty(editor) : true;
+      return { html, empty };
+    });
+  }
+
+  function collectSingleRemarks(){
+    const pairs = state.singlePairs?.remarks || [];
+
+    return pairs.map(item => {
+      const editor = item.pair?.editor;
+      const html = editor ? editor.getHtml() : '';
+      const empty = editor ? editorTextEmpty(editor) : true;
+      return { html, empty };
+    });
+  }
+
+  function collectItems(){
+    return $$('.item', els.outlineList).map(li => {
+      const pairs = li._pairs || {};
+      const bodyEd = pairs.body?.editor;
+
+      return {
+        title:$('.title-input', li)?.value.trim() || '',
+        start:$('.date-start', li)?.value || '',
+        end:$('.date-end', li)?.value || '',
+        body:bodyEd ? bodyEd.getHtml() : '',
+        bodyEmpty:bodyEd ? editorTextEmpty(bodyEd) : true,
+        remarks:collectItemRemarks(li)
+      };
+    });
+  }
+
+  function collectSingle(){
+    const pairs = ensureSingleEditors();
+
+    return {
+      body:pairs.body.editor.getHtml(),
+      bodyEmpty:editorTextEmpty(pairs.body.editor),
+      remarks:collectSingleRemarks()
+    };
+  }
+
+  function serialize(){
+    const base = {
+      mode:state.mode,
+      title:els.titleInput.value.trim(),
+      date:els.pageDate.value
+    };
+
+    if(state.mode === 'single'){
+      return {
+        ...base,
+        single:collectSingle()
+      };
+    }
+
+    return {
+      ...base,
+      items:collectItems()
+    };
+  }
+
+  function validatePayload(payload, silent){
+    function fail(msg){
+      if(!silent) toast(msg);
+      return false;
+    }
+
+    if(payload.mode === 'single'){
+      const single = payload.single || collectSingle();
+      if(single.bodyEmpty) return fail('正文缺少内容');
+      return true;
+    }
+
+    const items = payload.items || collectItems();
+    if(items.length === 0) return fail('请先添加至少 1 条条目');
+
+    for(let i=0;i<items.length;i++){
+      const it = items[i];
+      const n = i + 1;
+
+      if(!it.title) return fail(`第 ${n} 条缺少标题`);
+      if(it.start && it.end && it.end < it.start) return fail(`第 ${n} 条时间范围无效`);
+      if(it.bodyEmpty) return fail(`第 ${n} 条缺少正文内容`);
+    }
+
+    return true;
+  }
+
+  function updateToc(){
+    if(state.mode === 'single'){
+      els.sideToc.innerHTML = `
+        <div class="toc-head">
+          <div class="toc-title">页面结构</div>
+        </div>
+        <div class="toc-list">
+          <div class="toc-item" data-target="singleEditor">
+            <span class="toc-drag" style="visibility:hidden">☰</span>
+            <button class="toc-jump" data-act="locate-single" type="button">
+              <span class="toc-no">1</span>
+            </button>
+            <input class="toc-title-input" value="正文内容" readonly/>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    const items = $$('.item', els.outlineList);
+
+    const head = `
+      <div class="toc-head">
+        <div class="toc-title">页面结构</div>
+        <button class="btn small primary" data-act="toc-add" type="button">＋ 添加</button>
+      </div>
+    `;
+
+    if(!items.length){
+      els.sideToc.innerHTML = `
+        ${head}
+        <div class="toc-empty">暂无条目</div>
+      `;
+      return;
+    }
+
+    const html = items.map((li, i) => {
+      const id = `outline-item-${i+1}`;
+      li.id = id;
+
+      const title = $('.title-input', li)?.value.trim() || `条目 ${i+1}`;
+
+      return `
+        <div class="toc-item" data-target="${id}" data-index="${i}">
+          <span class="toc-drag" draggable="true" data-drag-index="${i}" title="拖动排序">☰</span>
+
+          <button class="toc-jump" data-act="locate" data-index="${i}" type="button" title="定位到条目">
+            <span class="toc-no">${i + 1}</span>
+          </button>
+
+          <input
+            class="toc-title-input"
+            data-act="rename"
+            data-index="${i}"
+            value="${escapeAttr(title)}"
+            title="可直接修改条目标题"
+          />
+
+          <div class="toc-actions">
+            <button class="toc-btn danger" data-act="toc-del" data-index="${i}" type="button">删</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    els.sideToc.innerHTML = `
+      ${head}
+      <div class="toc-list">${html}</div>
+    `;
+  }
+
+  function renderRemarksHTML(remarks){
+    const list = (remarks || []).filter(item => !item.empty);
+
+    if(!list.length) return '';
+
+    return `
+      <section class="preview-remarks-block">
+        <div class="preview-section-label">备注</div>
+        <div class="preview-remark-list">
+          ${list.map(item => `
+            <div class="preview-remark copyable" data-copy-region="remark" data-copy-format="html" data-copy-label="复制备注">
+              <div class="w-e-text">${item.html || ''}</div>
+            </div>
+          `).join('')}
+        </div>
+      </section>
+    `;
+  }
+
+  function buildPreviewHTML(){
+    const pageTitle = escapeHtml(els.pageTitle.textContent.trim() || '页面标题');
+    const pageDate = escapeHtml(fmtDateCN(els.pageDate.value) || '');
+
+    if(state.mode === 'single'){
+      const single = collectSingle();
+
+      return `
+        <article class="preview-doc-shell no-toc">
+          <main class="preview-main-flow">
+            <header class="preview-hero">
+              <div class="preview-title-card copyable" data-copy-region="title" data-copy-format="outer" data-copy-label="复制标题">
+                <h1>${pageTitle}</h1>
+              </div>
+              <div class="preview-date-card copyable" data-copy-region="date" data-copy-format="outer" data-copy-label="复制日期">${pageDate}</div>
+            </header>
+
+            <section class="preview-single">
+              <section class="preview-body-block">
+                <div class="preview-section copyable" data-copy-region="single-body" data-copy-format="html" data-copy-label="复制正文">
+                  <div class="preview-body w-e-text">${single.body}</div>
+                </div>
+              </section>
+
+              ${renderRemarksHTML(single.remarks)}
+            </section>
+          </main>
+        </article>
+      `;
+    }
+
+    const items = collectItems();
+
+    if(!items.length){
+      return `
+        <article class="preview-doc-shell no-toc">
+          <main class="preview-main-flow">
+            <header class="preview-hero">
+              <div class="preview-title-card copyable" data-copy-region="title" data-copy-format="outer" data-copy-label="复制标题">
+                <h1>${pageTitle}</h1>
+              </div>
+              <div class="preview-date-card copyable" data-copy-region="date" data-copy-format="outer" data-copy-label="复制日期">${pageDate}</div>
+            </header>
+            <div class="empty-hint">暂无条目，请先添加内容。</div>
+          </main>
+        </article>
+      `;
+    }
+
+    const toc = items.map((it,i) => {
+      const name = escapeHtml(it.title || `条目 ${i + 1}`);
+      return `<li><a href="#pv-item-${i + 1}">${name}</a></li>`;
+    }).join('');
+
+    const list = items.map((it,i) => {
+      const time = (it.start && it.end)
+        ? `<div class="preview-time copyable" data-copy-region="time" data-copy-format="outer" data-copy-label="复制时间">${escapeHtml(it.start)} ~ ${escapeHtml(it.end)}</div>`
+        : '';
+
+      return `
+        <li class="preview-item" id="pv-item-${i + 1}">
+          <div class="preview-item-head">
+            <div class="preview-index"></div>
+            <div>
+              <h2 class="preview-title copyable" data-copy-region="item-title" data-copy-format="outer" data-copy-label="复制标题">${escapeHtml(it.title || '')}</h2>
+              ${time}
+            </div>
+          </div>
+
+          <section class="preview-body-block">
+            <div class="preview-section copyable" data-copy-region="body" data-copy-format="html" data-copy-label="复制正文">
+              <div class="preview-body w-e-text">${it.body}</div>
+            </div>
+          </section>
+
+          ${renderRemarksHTML(it.remarks)}
+        </li>
+      `;
+    }).join('');
+
+    return `
+      <article class="preview-doc-shell">
+        <nav class="preview-print-toc" aria-label="打印目录">
+          <div class="preview-block-title">目录</div>
+          <ol>${toc}</ol>
+        </nav>
+
+        <main class="preview-main-flow">
+          <header class="preview-hero">
+            <div class="preview-title-card copyable" data-copy-region="title" data-copy-format="outer" data-copy-label="复制标题">
+              <h1>${pageTitle}</h1>
+            </div>
+            <div class="preview-date-card copyable" data-copy-region="date" data-copy-format="outer" data-copy-label="复制日期">${pageDate}</div>
+          </header>
+
+          <ol class="preview-items">${list}</ol>
+        </main>
+
+        <details class="preview-quick-toc">
+          <summary>目录</summary>
+          <nav class="preview-quick-toc-panel" aria-label="目录导航">
+            <div class="preview-block-title">目录</div>
+            <ol>${toc}</ol>
+          </nav>
+        </details>
+      </article>
+    `;
+  }
+
+  function copyComputedStyle(source, target){
+    if(!source || !target || source.nodeType !== 1 || target.nodeType !== 1){
+      return;
+    }
+
+    const computed = window.getComputedStyle(source);
+
+    const props = [
+      'display',
+      'box-sizing',
+      'width',
+      'max-width',
+      'min-width',
+      'height',
+      'min-height',
+      'margin',
+      'margin-top',
+      'margin-right',
+      'margin-bottom',
+      'margin-left',
+      'padding',
+      'padding-top',
+      'padding-right',
+      'padding-bottom',
+      'padding-left',
+      'border',
+      'border-top',
+      'border-right',
+      'border-bottom',
+      'border-left',
+      'border-radius',
+      'background',
+      'background-color',
+      'color',
+      'font',
+      'font-family',
+      'font-size',
+      'font-weight',
+      'font-style',
+      'line-height',
+      'letter-spacing',
+      'text-align',
+      'text-decoration',
+      'white-space',
+      'word-break',
+      'overflow-wrap',
+      'vertical-align',
+      'list-style',
+      'list-style-type',
+      'list-style-position',
+      'border-collapse',
+      'box-shadow'
+    ];
+
+    props.forEach(prop => {
+      const value = computed.getPropertyValue(prop);
+      if(value){
+        target.style.setProperty(prop, value);
+      }
+    });
+  }
+
+  function inlineCopyStyles(source, target){
+    if(!source || !target){
+      return;
+    }
+
+    if(source.nodeType === 1 && target.nodeType === 1){
+      copyComputedStyle(source, target);
+    }
+
+    const sourceChildren = Array.from(source.childNodes || []);
+    const targetChildren = Array.from(target.childNodes || []);
+
+    for(let i = 0; i < sourceChildren.length; i++){
+      inlineCopyStyles(sourceChildren[i], targetChildren[i]);
+    }
+  }
+
+  function getPlainTextWithLineBreaks(el){
+    const clone = el.cloneNode(true);
+
+    clone.querySelectorAll('.copy-region-btn,.code-copy-btn').forEach(btn => {
+      btn.remove();
+    });
+
+    clone.querySelectorAll('br').forEach(br => {
+      br.replaceWith('\n');
+    });
+
+    clone.querySelectorAll('h1,h2,h3,h4,h5,h6,p,div,section,article,header,main,nav,aside,blockquote,pre,ul,ol,li,tr,table').forEach(node => {
+      node.appendChild(document.createTextNode('\n'));
+    });
+
+    clone.querySelectorAll('td,th').forEach(node => {
+      node.appendChild(document.createTextNode('\t'));
+    });
+
+    return (clone.textContent || '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n[ \t]+/g, '\n')
+      .replace(/\t+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  function wrapClipboardHtml(html){
+    return '<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>';
+  }
+
+  function cleanCloneForCopy(el){
+    const clone = el.cloneNode(true);
+
+    inlineCopyStyles(el, clone);
+
+    clone.querySelectorAll('.copy-region-btn,.code-copy-btn').forEach(btn => {
+      btn.remove();
+    });
+
+    clone.querySelectorAll('a').forEach(a => {
+      const href = a.getAttribute('href');
+      if(href){
+        a.setAttribute('href', href);
+      }
+    });
+
+    clone.querySelectorAll('img').forEach(img => {
+      const src = img.getAttribute('src');
+      if(src){
+        img.setAttribute('src', src);
+      }
+    });
+
+    return clone;
+  }
+
+  async function copyHtmlAndText(html, plain){
+    const fullHtml = wrapClipboardHtml(html);
+
+    try{
+      if(navigator.clipboard && window.ClipboardItem){
+        const item = new ClipboardItem({
+          'text/html': new Blob([fullHtml], {type:'text/html'}),
+          'text/plain': new Blob([plain], {type:'text/plain'})
+        });
+
+        await navigator.clipboard.write([item]);
+        toast('已复制，格式和换行已保留');
+        return;
+      }
+    }catch(e){}
+
+    const div = document.createElement('div');
+    div.contentEditable = 'true';
+    div.style.position = 'fixed';
+    div.style.left = '-9999px';
+    div.style.top = '0';
+    div.innerHTML = fullHtml;
+    document.body.appendChild(div);
+
+    const range = document.createRange();
+    range.selectNodeContents(div);
+
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    try{
+      document.execCommand('copy');
+      toast('已复制，格式和换行已保留');
+    }catch(e){
+      fallbackCopyText(plain);
+    }
+
+    sel.removeAllRanges();
+    div.remove();
+  }
+
+  function enhanceRegionCopy(root){
+    root.querySelectorAll('[data-copy-region]').forEach(el => {
+      if(el.querySelector(':scope > .copy-region-btn')) return;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-region-btn';
+      btn.textContent = el.dataset.copyLabel || '复制';
+
+      btn.addEventListener('click', async e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const clone = cleanCloneForCopy(el);
+        const format = el.dataset.copyFormat || 'html';
+
+        let html;
+        if(format === 'outer'){
+          html = clone.outerHTML;
+        }else if(format === 'text'){
+          html = escapeHtml(getPlainTextWithLineBreaks(el));
+        }else{
+          html = clone.innerHTML;
+        }
+
+        const plain = getPlainTextWithLineBreaks(el);
+        await copyHtmlAndText(html, plain);
+      });
+
+      el.appendChild(btn);
+    });
+  }
+
+  function enhanceCodeCopy(root){
+    root.querySelectorAll('pre').forEach(pre => {
+      if(pre.parentElement && pre.parentElement.classList.contains('code-copy-wrap')) return;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'code-copy-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'code-copy-btn';
+      btn.textContent = '复制代码';
+
+      btn.addEventListener('click', async e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const clone = cleanCloneForCopy(pre);
+        const html = clone.outerHTML;
+        const plain = pre.innerText || pre.textContent || '';
+
+        await copyHtmlAndText(html, plain.trim());
+      });
+
+      wrap.appendChild(btn);
+    });
+
+    root.querySelectorAll('pre > code:not([class*="language-"])').forEach(code => {
+      code.classList.add('language-none');
+    });
+
+    if(window.Prism){
+      Prism.highlightAllUnder(root);
+    }
+  }
+
+  function enhancePreview(){
+    enhanceRegionCopy(els.previewPage);
+    enhanceCodeCopy(els.previewPage);
+  }
+
+  function bindQuickToc(root){
+    const quickToc = $('.preview-quick-toc', root);
+
+    if(!quickToc || quickToc.dataset.bound){
+      return;
+    }
+
+    quickToc.dataset.bound = '1';
+    let closeTimer = null;
+
+    const openQuickToc = () => {
+      clearTimeout(closeTimer);
+      quickToc.setAttribute('open', '');
+    };
+
+    const closeQuickToc = () => {
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(() => {
+        if(!quickToc.matches(':hover') && !quickToc.matches(':focus-within')){
+          quickToc.removeAttribute('open');
+        }
+      }, 120);
+    };
+
+    quickToc.addEventListener('mouseenter', openQuickToc);
+    quickToc.addEventListener('focusin', openQuickToc);
+    quickToc.addEventListener('mouseleave', closeQuickToc);
+    quickToc.addEventListener('focusout', closeQuickToc);
+
+    quickToc.addEventListener('click', e => {
+      if(e.target.closest('a')){
+        quickToc.removeAttribute('open');
+      }
+    });
+  }
+
+  function updatePreviewTocOffset(){
+    const topbar = $('.topbar');
+    const topbarHeight = topbar ? Math.ceil(topbar.getBoundingClientRect().height) : 76;
+    document.documentElement.style.setProperty('--preview-toc-top', `${topbarHeight + 12}px`);
+  }
+
+  function syncFloatingToc(root = document){
+    const toc = $('.preview-floating-toc', root);
+
+    if(!toc){
+      return;
+    }
+
+    toc.style.removeProperty('--preview-toc-left');
+    toc.style.removeProperty('--preview-toc-width');
+  }
+
+  function renderPreview(){
+    updatePreviewTocOffset();
+    els.previewPage.innerHTML = buildPreviewHTML();
+    syncFloatingToc(els.previewPage);
+    bindQuickToc(els.previewPage);
+    enhancePreview();
+  }
+
+  function schedulePreview(){
+    clearTimeout(state.previewTimer);
+    state.previewTimer = setTimeout(() => {
+      if(state.view === 'preview'){
+        renderPreview();
+      }
+    }, 250);
+  }
+
+  function switchView(view){
+    state.view = view;
+
+    const isPreview = view === 'preview';
+    els.editorRoot.classList.toggle('hidden', isPreview);
+    els.previewRoot.classList.toggle('hidden', !isPreview);
+    els.pageHead.classList.toggle('hidden', isPreview);
+    els.layout.classList.toggle('previewing', isPreview);
+    els.pageCard.classList.toggle('previewing', isPreview);
+
+    $('#btnEditView').classList.toggle('primary', !isPreview);
+    $('#btnPreviewView').classList.toggle('primary', isPreview);
+
+    if(isPreview){
+      renderPreview();
+    }
+  }
+
+  function switchMode(mode){
+    if(state.mode === mode) return;
+
+    state.mode = mode;
+
+    const isSingle = mode === 'single';
+    els.outlineList.classList.toggle('hidden', isSingle);
+    els.singleEditor.classList.toggle('hidden', !isSingle);
+
+    $('#tabOutline').classList.toggle('active', !isSingle);
+    $('#tabSingle').classList.toggle('active', isSingle);
+
+    if(isSingle){
+      ensureSingleEditors();
+      toast('已切换为正文模式');
+    }else{
+      if(!els.outlineList.children.length){
+        createItem();
+      }
+      toast('已切换为大纲模式');
+    }
+
+    updateToc();
+    scheduleAutosave();
+    schedulePreview();
+  }
+
+  function scheduleAutosave(){
+    if(state.suspendAutosave) return;
+
+    clearTimeout(state.autosaveTimer);
+    setAutosaveText('正在准备自动保存…');
+
+    state.autosaveTimer = setTimeout(() => {
+      if(state.suspendAutosave) return;
+
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(serialize()));
+        setAutosaveText(`已自动保存 ${new Date().toLocaleTimeString()}`);
+      }catch(e){
+        setAutosaveText('自动保存失败');
+      }
+    }, 500);
+  }
+
+  function destroyItemEditors(li){
+    destroyPair(li._pairs?.body);
+
+    (li._pairs?.remarks || []).forEach(item => {
+      destroyPair(item.pair);
+    });
+  }
+
+  function clearAllEditors(){
+    $$('.item', els.outlineList).forEach(li => {
+      destroyItemEditors(li);
+    });
+
+    els.outlineList.innerHTML = '';
+
+    if(state.singlePairs){
+      destroyPair(state.singlePairs.body);
+
+      (state.singlePairs.remarks || []).forEach(item => {
+        destroyPair(item.pair);
+      });
+
+      state.singlePairs = null;
+      els.singleBodyWrap.innerHTML = '';
+      els.singleRemarkList.innerHTML = '';
+    }
+  }
+
+  function createNewDocument(){
+    clearAllEditors();
+
+    state.mode = 'outline';
+    state.view = 'edit';
+
+    els.titleInput.value = '页面标题';
+    els.pageDate.value = todayISO();
+
+    els.outlineList.classList.remove('hidden');
+    els.singleEditor.classList.add('hidden');
+
+    $('#tabOutline').classList.add('active');
+    $('#tabSingle').classList.remove('active');
+
+    syncHeader();
+    createItem();
+    updateToc();
+    switchView('edit');
+    scheduleAutosave();
+  }
+
+  function deserialize(data){
+    clearAllEditors();
+
+    state.mode = data.mode === 'single' ? 'single' : 'outline';
+
+    els.titleInput.value = data.title || '页面标题';
+    els.pageDate.value = data.date || todayISO();
+
+    syncHeader();
+
+    if(state.mode === 'single'){
+      ensureSingleEditors(data.single || {});
+    }else{
+      (data.items || []).forEach(createItem);
+      if(!els.outlineList.children.length){
+        createItem();
+      }
+    }
+
+    const isSingle = state.mode === 'single';
+    els.outlineList.classList.toggle('hidden', isSingle);
+    els.singleEditor.classList.toggle('hidden', !isSingle);
+
+    $('#tabOutline').classList.toggle('active', !isSingle);
+    $('#tabSingle').classList.toggle('active', isSingle);
+
+    updateToc();
+    switchView(state.view);
+    scheduleAutosave();
+  }
+
+  function getExportCSS(){
+    const rootVars = getComputedStyle(document.documentElement);
+    const getVar = (k, dft='') => rootVars.getPropertyValue(k).trim() || dft;
+
+    const codeVars = `
+      --code-font-family:${getVar('--code-font-family','"Courier New","STZhongsong","华文中宋","Songti SC","SimSun",serif,monospace')};
+      --code-font-size:${getVar('--code-font-size','16px')};
+      --code-line-height:${getVar('--code-line-height','1.65')};
+      --code-bg:${getVar('--code-bg','#f6f8fb')};
+      --code-fg:${getVar('--code-fg','#0f172a')};
+      --code-border:${getVar('--code-border','#e5e7ef')};
+      --code-inline-bg:${getVar('--code-inline-bg','#eef2f7')};
+    `;
+
+    return `
+      :root{
+        --bg:#f5f7fb;
+        --text:#0f172a;
+        --muted:#64748b;
+        --accent:#2563eb;
+        --accent-soft:#eef4ff;
+        --border:#e5e7ef;
+        --shadow-soft:0 8px 24px rgba(15,23,42,.05);
+        --preview-toc-top:24px;
+        ${codeVars}
+      }
+
+      *{box-sizing:border-box}
+
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--text);
+        font:16px/1.75 "STZhongsong","华文中宋","Songti SC","SimSun",serif;
+      }
+
+      .page{
+        max-width:1320px;
+        margin:0 auto;
+        padding:28px;
+      }
+
+      .preview-doc{
+        max-width:1260px;
+        margin:0 auto;
+        color:#0f172a;
+        word-break:break-word;
+        overflow-wrap:anywhere;
+      }
+
+      .preview-doc-shell{
+        display:grid;
+        grid-template-columns:minmax(0,980px);
+        gap:18px;
+        align-items:stretch;
+        justify-content:center;
+      }
+
+      .preview-doc-shell.no-toc{
+        grid-template-columns:minmax(0,980px);
+      }
+
+      .preview-toc-rail{
+        min-width:0;
+        align-self:stretch;
+        width:100%;
+      }
+
+      .preview-main-flow{
+        min-width:0;
+        display:flex;
+        flex-direction:column;
+        gap:18px;
+      }
+
+      .preview-hero{
+        border:1px solid var(--border);
+        border-radius:22px;
+        background:
+          radial-gradient(circle at top left, rgba(37,99,235,.10), transparent 34%),
+          linear-gradient(180deg,#ffffff,#fbfdff);
+        box-shadow:var(--shadow-soft);
+        padding:28px 28px 22px;
+        overflow:hidden;
+      }
+
+      .preview-title-card{text-align:center}
+
+      .preview-title-card h1{
+        margin:0;
+        font-size:40px;
+        line-height:1.25;
+        letter-spacing:.02em;
+      }
+
+      .preview-date-card{
+        margin:12px auto 0;
+        width:max-content;
+        max-width:100%;
+        color:#64748b;
+        border:1px solid #e6edf8;
+        background:#ffffff;
+        border-radius:999px;
+        padding:6px 16px;
+        font-size:16px;
+      }
+
+      .preview-floating-toc{
+        position:sticky;
+        top:var(--preview-toc-top, 24px);
+        align-self:start;
+        width:100%;
+        max-height:calc(100vh - var(--preview-toc-top, 24px) - 24px);
+        overflow:auto;
+        border:1px solid var(--border);
+        border-radius:18px;
+        background:#ffffff;
+        box-shadow:0 8px 24px rgba(15,23,42,.08);
+        padding:14px 16px;
+        z-index:30;
+      }
+
+      .preview-floating-toc .preview-block-title{
+        margin-bottom:8px;
+        font-size:16px;
+      }
+
+      .preview-floating-toc ol{
+        margin:0;
+        padding-left:22px;
+        font-size:15px;
+        line-height:1.75;
+      }
+
+      .preview-floating-toc li{margin:3px 0}
+
+      .preview-floating-toc a{
+        color:#334155;
+        text-decoration:none;
+        border-bottom:1px dashed transparent;
+      }
+
+      .preview-floating-toc a:hover{
+        color:var(--accent);
+        border-bottom-color:var(--accent);
+      }
+
+      .preview-quick-toc{
+        position:fixed;
+        right:18px;
+        top:calc(var(--preview-toc-top, 24px) + 10px);
+        bottom:auto;
+        transform:none;
+        z-index:120;
+        font-family:"STZhongsong","华文中宋","Songti SC","SimSun",serif;
+      }
+
+      .preview-quick-toc summary{
+        list-style:none;
+        cursor:pointer;
+        user-select:none;
+        border:1px solid rgba(37,99,235,.34);
+        border-radius:14px;
+        background:
+          linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0)),
+          var(--accent);
+        color:#fff;
+        box-shadow:0 12px 30px rgba(37,99,235,.30);
+        padding:10px 13px;
+        min-width:76px;
+        text-align:center;
+        font-size:15px;
+        font-weight:700;
+        line-height:1.3;
+        letter-spacing:0;
+        transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+      }
+
+      .preview-quick-toc summary::before{
+        content:"☰";
+        display:inline-block;
+        margin-right:6px;
+        font-size:13px;
+        line-height:1;
+        opacity:.9;
+      }
+
+      .preview-quick-toc summary:hover,
+      .preview-quick-toc[open] summary{
+        transform:translateX(-2px);
+        box-shadow:0 16px 36px rgba(37,99,235,.34);
+      }
+
+      .preview-quick-toc summary::-webkit-details-marker{
+        display:none;
+      }
+
+      .preview-quick-toc-panel{
+        position:absolute;
+        right:0;
+        top:calc(100% + 10px);
+        bottom:auto;
+        transform:none;
+        width:clamp(180px, 28vw, 300px);
+        max-height:min(58vh, 460px);
+        overflow:auto;
+        border:1px solid var(--border);
+        border-radius:16px;
+        background:#fff;
+        box-shadow:0 16px 40px rgba(15,23,42,.18);
+        padding:14px 16px;
+      }
+
+      .preview-quick-toc:not([open]):not(:hover):not(:focus-within) .preview-quick-toc-panel{
+        display:none;
+      }
+
+      .preview-quick-toc .preview-block-title{
+        margin-bottom:8px;
+        font-size:16px;
+      }
+
+      .preview-quick-toc ol{
+        margin:0;
+        padding-left:22px;
+        font-size:15px;
+        line-height:1.75;
+      }
+
+      .preview-quick-toc li{margin:3px 0}
+
+      .preview-quick-toc a{
+        color:#334155;
+        text-decoration:none;
+        border-bottom:1px dashed transparent;
+      }
+
+      .preview-quick-toc a:hover{
+        color:var(--accent);
+        border-bottom-color:var(--accent);
+      }
+
+      .preview-print-toc{
+        display:none;
+      }
+
+      .preview-block-title{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        margin:0 0 10px;
+        color:#334155;
+        font-size:18px;
+        line-height:1.35;
+        font-weight:700;
+      }
+
+      .preview-block-title::before{
+        content:"";
+        width:4px;
+        height:18px;
+        border-radius:999px;
+        background:var(--accent);
+      }
+
+      .preview-items{
+        counter-reset:item;
+        list-style:none;
+        margin:0;
+        padding:0;
+        display:flex;
+        flex-direction:column;
+        gap:18px;
+      }
+
+      .preview-item{
+        counter-increment:item;
+        border:1px solid var(--border);
+        border-radius:22px;
+        background:#ffffff;
+        box-shadow:var(--shadow-soft);
+        padding:20px;
+        scroll-margin-top:24px;
+      }
+
+      .preview-item-head{
+        display:grid;
+        grid-template-columns:auto 1fr;
+        gap:14px;
+        align-items:start;
+        margin-bottom:14px;
+      }
+
+      .preview-index{
+        min-width:46px;
+        height:46px;
+        border-radius:15px;
+        background:var(--accent-soft);
+        color:var(--accent);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:22px;
+        font-weight:700;
+        font-variant-numeric:tabular-nums;
+      }
+
+      .preview-index::before{content:counter(item)}
+
+      .preview-title{
+        margin:0;
+        font-size:32px;
+        line-height:1.25;
+        font-weight:700;
+      }
+
+      .preview-time{
+        margin-top:8px;
+        display:inline-flex;
+        color:#64748b;
+        background:#f8fafc;
+        border:1px solid #e6edf8;
+        border-radius:999px;
+        padding:4px 12px;
+        font-family:"Courier New",Courier,monospace;
+        font-size:16px;
+      }
+
+      .preview-body-block{margin-top:12px}
+      .preview-body-block:first-child{margin-top:0}
+
+      .preview-body-block > .preview-section-label,
+      .preview-remarks-block > .preview-section-label{
+        margin:0 0 8px;
+        padding-left:2px;
+        color:#475569;
+        font-size:15px;
+        line-height:1.35;
+        font-weight:700;
+      }
+
+      .preview-section{
+        border:1px solid #e8edf5;
+        border-radius:18px;
+        background:#fbfdff;
+        padding:16px;
+      }
+
+      .preview-body{
+        font-family:"STZhongsong","华文中宋","Songti SC","SimSun",serif;
+        font-size:24px;
+        line-height:1.85;
+      }
+
+      .preview-remarks-block{margin-top:12px}
+
+      .preview-remark-list{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        margin-top:8px;
+      }
+
+      .preview-remark{
+        border:1px solid #e6edf8;
+        border-left:4px solid #bfdbfe;
+        border-radius:14px;
+        background:#f8fafc;
+        padding:12px 14px;
+        font-size:16px;
+        line-height:1.8;
+        font-family:"FangSong","仿宋","FangSong_GB2312","Songti SC","SimSun",serif;
+      }
+
+      .preview-single{
+        border:1px solid var(--border);
+        border-radius:22px;
+        background:#fff;
+        box-shadow:var(--shadow-soft);
+        padding:20px;
+      }
+
+      .preview-doc :where(img,video,iframe){
+        max-width:100%;
+        height:auto;
+        display:block;
+        border-radius:10px;
+      }
+
+      .preview-doc :where(table){
+        display:block;
+        max-width:100%;
+        overflow-x:auto;
+        border-collapse:collapse;
+      }
+
+      table,th,td{border:1px solid #e5e7eb}
+      th,td{padding:8px}
+
+      .preview-doc :not(pre):not(code) a{
+        word-break:break-all;
+        overflow-wrap:anywhere;
+      }
+
+      .preview-doc pre,
+      .w-e-text pre{
+        font-family:var(--code-font-family) !important;
+        font-size:var(--code-font-size) !important;
+        line-height:var(--code-line-height) !important;
+        background:var(--code-bg) !important;
+        color:var(--code-fg);
+        border:1px solid var(--code-border) !important;
+        border-radius:12px !important;
+        padding:12px 14px !important;
+        margin:10px 0 !important;
+        white-space:pre !important;
+        display:block !important;
+        width:100% !important;
+        max-width:100% !important;
+        box-sizing:border-box !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        tab-size:2;
+        -moz-tab-size:2;
+        font-variant-ligatures:none !important;
+        -webkit-font-smoothing:antialiased;
+      }
+
+      .preview-doc pre>code,
+      .w-e-text pre>code{
+        font:inherit !important;
+        background:transparent !important;
+        padding:0 !important;
+        border:0 !important;
+      }
+
+      .preview-doc :not(pre)>code,
+      .w-e-text :not(pre)>code{
+        font-family:var(--code-font-family) !important;
+        font-size:calc(var(--code-font-size) - 1px) !important;
+        line-height:1.6 !important;
+        color:var(--code-fg);
+        background:var(--code-inline-bg) !important;
+        border:1px solid var(--code-border) !important;
+        border-radius:.4em !important;
+        padding:.1em .35em !important;
+        font-variant-ligatures:none !important;
+      }
+
+      [data-w-e-type="code"] pre{
+        background:var(--code-bg) !important;
+        border:1px solid var(--code-border) !important;
+        border-radius:12px !important;
+      }
+
+      .copyable{position:relative}
+
+      .copy-region-btn{
+        position:absolute;
+        right:10px;
+        top:10px;
+        z-index:4;
+        border:1px solid var(--border);
+        background:#fff;
+        color:#334155;
+        border-radius:9px;
+        padding:4px 9px;
+        font-size:12px;
+        line-height:1.35;
+        cursor:pointer;
+        opacity:0;
+        pointer-events:none;
+        box-shadow:0 3px 10px rgba(15,23,42,.08);
+        transition:opacity .15s ease,background .15s ease,border-color .15s ease;
+      }
+
+      .copyable:hover > .copy-region-btn{
+        opacity:1;
+        pointer-events:auto;
+      }
+
+      .copy-region-btn:hover{
+        background:#f8fbff;
+        border-color:#bfdbfe;
+      }
+
+      .code-copy-wrap{position:relative}
+
+      .code-copy-btn{
+        position:absolute;
+        right:8px;
+        top:8px;
+        z-index:3;
+        border:1px solid var(--border);
+        background:#fff;
+        color:#334155;
+        border-radius:8px;
+        padding:4px 8px;
+        font-size:12px;
+        line-height:1.35;
+        cursor:pointer;
+        opacity:.18;
+        transition:opacity .15s ease,background .15s ease,border-color .15s ease;
+      }
+
+      .code-copy-wrap:hover > .code-copy-btn{opacity:1}
+
+      .code-copy-btn:hover{
+        background:#f8fbff;
+        border-color:#bfdbfe;
+      }
+
+      .toast{
+        position:fixed;
+        right:16px;
+        bottom:16px;
+        background:#111827;
+        color:#fff;
+        border-radius:10px;
+        padding:8px 12px;
+        font-size:12px;
+        opacity:0;
+        transition:opacity .2s;
+        z-index:999;
+      }
+
+      .toast.show{opacity:1}
+
+      @media (max-width:900px){
+        .page{max-width:1040px}
+        .preview-doc{max-width:980px}
+        .preview-doc-shell,
+        .preview-doc-shell.no-toc{
+          display:flex;
+          flex-direction:column;
+          gap:18px;
+        }
+        .preview-toc-rail{
+          order:-1;
+          position:sticky;
+          top:var(--preview-toc-top, 24px);
+          z-index:30;
+          align-self:stretch;
+        }
+        .preview-floating-toc{
+          position:static;
+          width:auto;
+          max-height:min(50vh, calc(100vh - var(--preview-toc-top, 24px) - 24px));
+          overflow:auto;
+        }
+      }
+
+      @media print{
+        body{background:#fff !important}
+        body *{display:none !important}
+        body::before{
+          content:"此页面已设置为禁止打印";
+          display:block !important;
+          margin:20vh auto 0;
+          max-width:520px;
+          padding:24px 28px;
+          color:#0f172a;
+          border:1px solid #e5e7ef;
+          border-radius:16px;
+          text-align:center;
+          font:700 22px/1.5 "STZhongsong","华文中宋","Songti SC","SimSun",serif;
+        }
+      }
+
+      @media (max-width:720px){
+        .page{padding:14px}
+        .preview-floating-toc{
+          max-height:min(42vh, calc(100vh - var(--preview-toc-top, 24px) - 16px));
+        }
+        .preview-quick-toc{
+          right:14px;
+        }
+        .preview-quick-toc-panel{
+          right:0;
+          width:min(300px, calc(100vw - 28px));
+          max-height:min(56vh, 430px);
+        }
+        .preview-title-card h1{font-size:28px}
+        .preview-item-head{grid-template-columns:1fr}
+        .preview-index{width:46px}
+        .preview-title{font-size:26px}
+      }
+    `;
+  }
+
+  function buildExportHTML(){
+    const payload = serialize();
+
+    if(!validatePayload(payload, false)){
+      return null;
+    }
+
+    const body = buildPreviewHTML();
+    const title = escapeHtml(els.pageTitle.textContent.trim() || '页面标题');
+
+    return `<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>${title}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@wangeditor/editor@5.1.23/dist/css/style.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css"/>
+<style>${getExportCSS()}</style>
+</head>
+<body>
+<main class="page">
+  <div class="preview-doc" id="previewDoc">${body}</div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/autoloader/prism-autoloader.min.js"><\/script>
+<script>
+(function(){
+  if(window.Prism && Prism.plugins && Prism.plugins.autoloader){
+    Prism.plugins.autoloader.languages_path='https://cdn.jsdelivr.net/npm/prismjs/components/';
+  }
+
+  function escapeHtml(s){
+    return String(s || '').replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function toast(msg){
+    var t=document.getElementById('toast');
+    if(!t) return;
+    t.textContent=msg;
+    t.classList.add('show');
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer=setTimeout(function(){t.classList.remove('show');},1400);
+  }
+
+  function fallbackCopyText(text){
+    var ta=document.createElement('textarea');
+    ta.value=text;
+    ta.style.position='fixed';
+    ta.style.left='-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try{document.execCommand('copy');toast('已复制');}catch(e){toast('复制失败');}
+    document.body.removeChild(ta);
+  }
+
+  function copyComputedStyle(source,target){
+    if(!source || !target || source.nodeType !== 1 || target.nodeType !== 1) return;
+    var computed=window.getComputedStyle(source);
+    var props=[
+      'display','box-sizing','width','max-width','min-width','height','min-height',
+      'margin','margin-top','margin-right','margin-bottom','margin-left',
+      'padding','padding-top','padding-right','padding-bottom','padding-left',
+      'border','border-top','border-right','border-bottom','border-left','border-radius',
+      'background','background-color','color','font','font-family','font-size','font-weight',
+      'font-style','line-height','letter-spacing','text-align','text-decoration','white-space',
+      'word-break','overflow-wrap','vertical-align','list-style','list-style-type',
+      'list-style-position','border-collapse','box-shadow'
+    ];
+    props.forEach(function(prop){
+      var value=computed.getPropertyValue(prop);
+      if(value) target.style.setProperty(prop,value);
+    });
+  }
+
+  function inlineCopyStyles(source,target){
+    if(!source || !target) return;
+
+    if(source.nodeType === 1 && target.nodeType === 1){
+      copyComputedStyle(source,target);
+    }
+
+    var sourceChildren=Array.from(source.childNodes || []);
+    var targetChildren=Array.from(target.childNodes || []);
+
+    for(var i=0;i<sourceChildren.length;i++){
+      inlineCopyStyles(sourceChildren[i],targetChildren[i]);
+    }
+  }
+
+  function getPlainTextWithLineBreaks(el){
+    var clone=el.cloneNode(true);
+
+    clone.querySelectorAll('.copy-region-btn,.code-copy-btn').forEach(function(btn){
+      btn.remove();
+    });
+
+    clone.querySelectorAll('br').forEach(function(br){
+      br.replaceWith('\\n');
+    });
+
+    clone.querySelectorAll('h1,h2,h3,h4,h5,h6,p,div,section,article,header,main,nav,aside,blockquote,pre,ul,ol,li,tr,table').forEach(function(node){
+      node.appendChild(document.createTextNode('\\n'));
+    });
+
+    clone.querySelectorAll('td,th').forEach(function(node){
+      node.appendChild(document.createTextNode('\\t'));
+    });
+
+    return (clone.textContent || '')
+      .replace(/\\u00a0/g,' ')
+      .replace(/[ \\t]+\\n/g,'\\n')
+      .replace(/\\n[ \\t]+/g,'\\n')
+      .replace(/\\t+\\n/g,'\\n')
+      .replace(/\\n{3,}/g,'\\n\\n')
+      .trim();
+  }
+
+  function wrapClipboardHtml(html){
+    return '<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>';
+  }
+
+  function cleanCloneForCopy(el){
+    var clone=el.cloneNode(true);
+
+    inlineCopyStyles(el,clone);
+
+    clone.querySelectorAll('.copy-region-btn,.code-copy-btn').forEach(function(btn){
+      btn.remove();
+    });
+
+    clone.querySelectorAll('a').forEach(function(a){
+      var href=a.getAttribute('href');
+      if(href) a.setAttribute('href',href);
+    });
+
+    clone.querySelectorAll('img').forEach(function(img){
+      var src=img.getAttribute('src');
+      if(src) img.setAttribute('src',src);
+    });
+
+    return clone;
+  }
+
+  async function copyHtmlAndText(html,plain){
+    var fullHtml=wrapClipboardHtml(html);
+
+    try{
+      if(navigator.clipboard && window.ClipboardItem){
+        var item=new ClipboardItem({
+          'text/html':new Blob([fullHtml],{type:'text/html'}),
+          'text/plain':new Blob([plain],{type:'text/plain'})
+        });
+        await navigator.clipboard.write([item]);
+        toast('已复制，格式和换行已保留');
+        return;
+      }
+    }catch(e){}
+
+    var div=document.createElement('div');
+    div.contentEditable='true';
+    div.style.position='fixed';
+    div.style.left='-9999px';
+    div.style.top='0';
+    div.innerHTML=fullHtml;
+    document.body.appendChild(div);
+
+    var range=document.createRange();
+    range.selectNodeContents(div);
+
+    var sel=window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    try{
+      document.execCommand('copy');
+      toast('已复制，格式和换行已保留');
+    }catch(e){
+      fallbackCopyText(plain);
+    }
+
+    sel.removeAllRanges();
+    div.remove();
+  }
+
+  function enhanceRegionCopy(root){
+    root.querySelectorAll('[data-copy-region]').forEach(function(el){
+      if(el.querySelector(':scope > .copy-region-btn')) return;
+
+      var btn=document.createElement('button');
+      btn.type='button';
+      btn.className='copy-region-btn';
+      btn.textContent=el.dataset.copyLabel || '复制';
+
+      btn.addEventListener('click',async function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        var clone=cleanCloneForCopy(el);
+        var format=el.dataset.copyFormat || 'html';
+        var html;
+
+        if(format === 'outer'){
+          html=clone.outerHTML;
+        }else if(format === 'text'){
+          html=escapeHtml(getPlainTextWithLineBreaks(el));
+        }else{
+          html=clone.innerHTML;
+        }
+
+        var plain=getPlainTextWithLineBreaks(el);
+        await copyHtmlAndText(html,plain);
+      });
+
+      el.appendChild(btn);
+    });
+  }
+
+  function enhanceCodeCopy(root){
+    root.querySelectorAll('pre').forEach(function(pre){
+      if(pre.parentElement && pre.parentElement.classList.contains('code-copy-wrap')) return;
+
+      var wrap=document.createElement('div');
+      wrap.className='code-copy-wrap';
+      pre.parentNode.insertBefore(wrap,pre);
+      wrap.appendChild(pre);
+
+      var btn=document.createElement('button');
+      btn.type='button';
+      btn.className='code-copy-btn';
+      btn.textContent='复制代码';
+
+      btn.addEventListener('click',async function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        var clone=cleanCloneForCopy(pre);
+        var html=clone.outerHTML;
+        var plain=pre.innerText || pre.textContent || '';
+
+        await copyHtmlAndText(html,plain.trim());
+      });
+
+      wrap.appendChild(btn);
+    });
+
+    root.querySelectorAll('pre > code:not([class*="language-"])').forEach(function(code){
+      code.classList.add('language-none');
+    });
+
+    if(window.Prism){
+      Prism.highlightAllUnder(root);
+    }
+  }
+
+  function syncFloatingToc(root){
+    var toc=root.querySelector('.preview-floating-toc');
+
+    if(!toc) return;
+
+    toc.style.removeProperty('--preview-toc-left');
+    toc.style.removeProperty('--preview-toc-width');
+  }
+
+  var root=document.getElementById('previewDoc') || document.body;
+  syncFloatingToc(root);
+  enhanceRegionCopy(root);
+  enhanceCodeCopy(root);
+  root.querySelectorAll('.preview-quick-toc').forEach(function(quickToc){
+    var closeTimer=null;
+    function openQuickToc(){
+      clearTimeout(closeTimer);
+      quickToc.setAttribute('open','');
+    }
+    function closeQuickToc(){
+      clearTimeout(closeTimer);
+      closeTimer=setTimeout(function(){
+        if(!quickToc.matches(':hover') && !quickToc.matches(':focus-within')){
+          quickToc.removeAttribute('open');
+        }
+      },120);
+    }
+    quickToc.addEventListener('mouseenter',openQuickToc);
+    quickToc.addEventListener('focusin',openQuickToc);
+    quickToc.addEventListener('mouseleave',closeQuickToc);
+    quickToc.addEventListener('focusout',closeQuickToc);
+    quickToc.addEventListener('click',function(e){
+      if(e.target.closest('a')){
+        quickToc.removeAttribute('open');
+      }
+    });
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.ctrlKey || e.metaKey) && String(e.key || '').toLowerCase() === 'p'){
+      e.preventDefault();
+      toast('此页面已设置为禁止打印');
+    }
+  });
+  window.addEventListener('resize',function(){syncFloatingToc(root);});
+})();
+<\/script>
+</body>
+</html>`;
+  }
+
+  function downloadText(name, text, type){
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], {type}));
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function fallbackCopyText(text){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+
+    try{
+      document.execCommand('copy');
+      toast('已复制');
+    }catch(e){
+      toast('复制失败');
+    }
+
+    document.body.removeChild(ta);
+  }
+
+  function saveJSON(){
+    const title = filenameSafe(els.pageTitle.textContent || '页面标题');
+    downloadText(`${title}-草稿.json`, JSON.stringify(serialize(), null, 2), 'application/json');
+    toast('草稿已保存');
+  }
+
+  function loadJSON(){
+    const inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'application/json,.json';
+
+    inp.onchange = () => {
+      const f = inp.files && inp.files[0];
+      if(!f) return;
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        try{
+          const data = JSON.parse(reader.result);
+          deserialize(data);
+          toast('草稿已载入');
+        }catch(e){
+          toast('解析失败：' + e.message);
+        }
+      };
+
+      reader.readAsText(f);
+    };
+
+    inp.click();
+  }
+
+  function exportHTML(){
+    const html = buildExportHTML();
+    if(!html) return;
+
+    const title = filenameSafe(els.pageTitle.textContent || '页面标题');
+    downloadText(`${title}.html`, html, 'text/html');
+    toast('HTML 已导出');
+  }
+
+  function locateItem(target){
+    if(!target) return;
+
+    target.scrollIntoView({behavior:'smooth', block:'start'});
+    target.classList.remove('flash');
+
+    setTimeout(() => target.classList.add('flash'), 40);
+    setTimeout(() => target.classList.remove('flash'), 1000);
+  }
+
+  function hasAutosave(){
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(!saved) return false;
+
+    try{
+      JSON.parse(saved);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function restoreAutosave(){
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(!saved) return false;
+
+    try{
+      const data = JSON.parse(saved);
+      deserialize(data);
+      toast('已恢复上次内容');
+      return true;
+    }catch(e){
+      toast('恢复失败，已新建内容');
+      createNewDocument();
+      return false;
+    }
+  }
+
+  function showStartChoice(){
+    const mask = document.createElement('div');
+    mask.className = 'start-mask';
+
+    mask.innerHTML = `
+      <div class="start-dialog">
+        <h3>检测到上次编辑内容</h3>
+        <p>请选择继续编辑上次内容，或新建一份空白内容。</p>
+        <div class="start-actions">
+          <button class="btn primary" id="btnRestoreLast" type="button">继续上次内容</button>
+          <button class="btn" id="btnCreateNew" type="button">新建内容</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(mask);
+
+    $('#btnRestoreLast', mask).addEventListener('click', () => {
+      state.suspendAutosave = false;
+      restoreAutosave();
+      mask.remove();
+    });
+
+    $('#btnCreateNew', mask).addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      state.suspendAutosave = false;
+      createNewDocument();
+      mask.remove();
+      toast('已新建内容');
+    });
+  }
+
+  function bindEvents(){
+    els.titleInput.addEventListener('input', syncHeader);
+    els.pageDate.addEventListener('change', syncHeader);
+
+    $('#btnToday').addEventListener('click', () => {
+      els.pageDate.value = todayISO();
+      syncHeader();
+    });
+
+    $('#btnClearDate').addEventListener('click', () => {
+      els.pageDate.value = '';
+      syncHeader();
+    });
+
+    $('#tabOutline').addEventListener('click', () => switchMode('outline'));
+    $('#tabSingle').addEventListener('click', () => switchMode('single'));
+
+    $('#btnEditView').addEventListener('click', () => switchView('edit'));
+    $('#btnPreviewView').addEventListener('click', () => switchView('preview'));
+
+    $('#btnSaveJSON').addEventListener('click', saveJSON);
+    $('#btnLoadJSON').addEventListener('click', loadJSON);
+    $('#btnExportHTML').addEventListener('click', exportHTML);
+
+    els.outlineList.addEventListener('click', e => {
+      const btn = e.target.closest('[data-act]');
+      if(!btn) return;
+
+      const li = btn.closest('.item');
+      const act = btn.dataset.act;
+
+      if(act === 'clear-date'){
+        $('.date-start', li).value = '';
+        $('.date-end', li).value = '';
+        scheduleAutosave();
+        schedulePreview();
+        return;
+      }
+
+      if(act === 'add-remark'){
+        addRemarkToItem(li, '', true);
+        return;
+      }
+
+      if(act === 'del-remark'){
+        const remarkItem = btn.closest('.remark-item');
+        const list = li._pairs?.remarks || [];
+        const idx = list.findIndex(item => item.el === remarkItem);
+
+        if(idx >= 0){
+          destroyPair(list[idx].pair);
+          list.splice(idx, 1);
+        }
+
+        remarkItem.remove();
+        scheduleAutosave();
+        schedulePreview();
+      }
+    });
+
+    els.singleEditor.addEventListener('click', e => {
+      const btn = e.target.closest('[data-act]');
+      if(!btn) return;
+
+      const act = btn.dataset.act;
+
+      if(act === 'single-add-remark'){
+        addSingleRemark('', true);
+        return;
+      }
+
+      if(act === 'single-del-remark'){
+        const remarkItem = btn.closest('.remark-item');
+        const list = state.singlePairs?.remarks || [];
+        const idx = list.findIndex(item => item.el === remarkItem);
+
+        if(idx >= 0){
+          destroyPair(list[idx].pair);
+          list.splice(idx, 1);
+        }
+
+        remarkItem.remove();
+        scheduleAutosave();
+        schedulePreview();
+      }
+    });
+
+    els.sideToc.addEventListener('input', e => {
+      const input = e.target.closest('.toc-title-input[data-act="rename"]');
+      if(!input) return;
+
+      const index = Number(input.dataset.index);
+      const items = $$('.item', els.outlineList);
+      const li = items[index];
+
+      if(!li) return;
+
+      $('.title-input', li).value = input.value;
+      scheduleAutosave();
+      schedulePreview();
+    });
+
+    els.sideToc.addEventListener('keydown', e => {
+      if(e.target.matches('.toc-title-input[data-act="rename"]') && e.key === 'Enter'){
+        e.preventDefault();
+        e.target.blur();
+
+        const index = Number(e.target.dataset.index);
+        const items = $$('.item', els.outlineList);
+        const li = items[index];
+
+        if(li){
+          locateItem(li);
+        }
+      }
+    });
+
+    els.sideToc.addEventListener('click', e => {
+      const btn = e.target.closest('[data-act]');
+      if(!btn) return;
+
+      const act = btn.dataset.act;
+
+      if(act === 'toc-add'){
+        const li = createItem();
+        updateToc();
+        locateItem(li);
+        return;
+      }
+
+      if(act === 'locate-single'){
+        locateItem(els.singleEditor);
+        return;
+      }
+
+      const index = Number(btn.dataset.index);
+      const items = $$('.item', els.outlineList);
+      const li = items[index];
+
+      if(act === 'locate'){
+        if(li) locateItem(li);
+        return;
+      }
+
+      if(act === 'toc-del'){
+        if(!li) return;
+        destroyItemEditors(li);
+        li.remove();
+        updateToc();
+        toast('条目已删除');
+        scheduleAutosave();
+        schedulePreview();
+      }
+    });
+
+    els.sideToc.addEventListener('dragstart', e => {
+      const handle = e.target.closest('.toc-drag[draggable="true"]');
+      if(!handle) return;
+
+      const item = handle.closest('.toc-item');
+      if(!item) return;
+
+      state.dragIndex = Number(item.dataset.index);
+      item.classList.add('dragging');
+
+      if(e.dataTransfer){
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(state.dragIndex));
+      }
+    });
+
+    els.sideToc.addEventListener('dragover', e => {
+      const item = e.target.closest('.toc-item[data-index]');
+      if(!item) return;
+
+      e.preventDefault();
+
+      $$('.toc-item.drag-over', els.sideToc).forEach(el => {
+        if(el !== item) el.classList.remove('drag-over');
+      });
+
+      item.classList.add('drag-over');
+
+      if(e.dataTransfer){
+        e.dataTransfer.dropEffect = 'move';
+      }
+    });
+
+    els.sideToc.addEventListener('dragleave', e => {
+      const item = e.target.closest('.toc-item[data-index]');
+      if(!item) return;
+
+      item.classList.remove('drag-over');
+    });
+
+    els.sideToc.addEventListener('drop', e => {
+      const item = e.target.closest('.toc-item[data-index]');
+      if(!item) return;
+
+      e.preventDefault();
+
+      const dropIndex = Number(item.dataset.index);
+      const items = $$('.item', els.outlineList);
+
+      if(state.dragIndex === null || Number.isNaN(state.dragIndex) || state.dragIndex === dropIndex){
+        state.dragIndex = null;
+        return;
+      }
+
+      const draggedLi = items[state.dragIndex];
+      const targetLi = items[dropIndex];
+
+      if(!draggedLi || !targetLi){
+        state.dragIndex = null;
+        return;
+      }
+
+      if(state.dragIndex < dropIndex){
+        els.outlineList.insertBefore(draggedLi, targetLi.nextElementSibling);
+      }else{
+        els.outlineList.insertBefore(draggedLi, targetLi);
+      }
+
+      state.dragIndex = null;
+
+      $$('.toc-item', els.sideToc).forEach(el => {
+        el.classList.remove('dragging', 'drag-over');
+      });
+
+      updateToc();
+      scheduleAutosave();
+      schedulePreview();
+      locateItem(draggedLi);
+    });
+
+    els.sideToc.addEventListener('dragend', () => {
+      state.dragIndex = null;
+
+      $$('.toc-item', els.sideToc).forEach(item => {
+        item.classList.remove('dragging', 'drag-over');
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      if(e.ctrlKey && e.key.toLowerCase() === 's'){
+        e.preventDefault();
+        saveJSON();
+      }
+
+      if(e.ctrlKey && e.key.toLowerCase() === 'e'){
+        e.preventDefault();
+        switchView(state.view === 'edit' ? 'preview' : 'edit');
+      }
+
+      if(e.ctrlKey && e.key.toLowerCase() === 'p'){
+        e.preventDefault();
+        toast('此页面已设置为禁止打印');
+      }
+
+      if(e.ctrlKey && e.key === 'Enter'){
+        e.preventDefault();
+        exportHTML();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if(state.view === 'preview'){
+        updatePreviewTocOffset();
+        syncFloatingToc(els.previewPage);
+      }
+    });
+  }
+
+  function init(){
+    state.suspendAutosave = true;
+
+    els.titleInput.value = '页面标题';
+    els.pageDate.value = todayISO();
+
+    bindEvents();
+
+    if(hasAutosave()){
+      createNewDocument();
+      showStartChoice();
+    }else{
+      state.suspendAutosave = false;
+      createNewDocument();
+    }
+
+    switchView('edit');
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
