@@ -7,9 +7,21 @@ Hodo Desktop 是基于单文件网页 `hodo.html` 封装的离线桌面应用工
 - 保留 `hodo.html` 作为原始网页入口和业务来源。
 - 构建时自动生成离线应用目录 `app/`，替换 CDN 地址为本地 `app/vendor/` 资源。
 - 使用 Electron 封装桌面应用，支持离线运行。
+- 预览和导出的 HTML 使用正式、简洁的文档排版，包含页面标题、日期、目录、正文条目和附注。
+- 预览页和导出页保留右上角目录按钮，便于在长内容中快速跳转。
 - Windows 输出 NSIS 安装器，安装后启动速度优于 portable 单文件。
 - Linux 输出 `.deb` 安装包，包含桌面入口、应用图标和任务栏图标匹配配置。
 - 自动生成应用图标，并写入 Windows exe 资源、Linux hicolor 图标目录和 Electron 运行时资源目录。
+
+## 软件界面
+
+编辑界面：
+
+![Hodo 编辑界面](docs/images/hodo-edit.png)
+
+预览和导出效果：
+
+![Hodo 预览界面](docs/images/hodo-preview.png)
 
 ## 原始 HTML
 
@@ -36,8 +48,11 @@ Hodo Desktop 是基于单文件网页 `hodo.html` 封装的离线桌面应用工
 ├── scripts/
 │   ├── prepare-app.mjs        # 生成离线 app/
 │   ├── generate-icons.ps1     # 生成 icon.ico / icon.png
+│   ├── capture-readme-screenshots.cjs # 生成 README 软件界面截图
 │   ├── after-pack.cjs         # Windows 打包后写入 exe 图标资源
 │   └── build-deb.mjs          # 组装 Linux deb 包
+├── docs/
+│   └── images/                # README 软件界面截图
 ├── build/
 │   ├── icon.svg               # 图标源文件
 │   ├── icon.ico               # Windows 图标
@@ -100,14 +115,20 @@ npm run prepare:app
 npm run prepare:icons
 ```
 
+重新生成 README 中的软件界面截图：
+
+```powershell
+npm run capture:readme
+```
+
 ## 交付物
 
 构建完成后，主要交付物位于 `dist/`：
 
 ```text
 dist/
-├── Hodo-1.0.0-win-x64.exe       # Windows x64 安装器
-├── Hodo-1.0.0-linux-amd64.deb   # Debian/Ubuntu x64 安装包
+├── Hodo-1.0.1-win-x64.exe       # Windows x64 安装器
+├── Hodo-1.0.1-linux-amd64.deb   # Debian/Ubuntu x64 安装包
 ├── win-unpacked/                # Windows 已展开应用目录，可直接运行 Hodo.exe
 └── linux-unpacked/              # Linux 已展开应用目录，用于组装 deb
 ```
@@ -117,7 +138,7 @@ dist/
 推荐分发：
 
 ```text
-dist/Hodo-1.0.0-win-x64.exe
+dist/Hodo-1.0.1-win-x64.exe
 ```
 
 这是 NSIS 安装器，不是 portable 单文件。安装后会创建桌面快捷方式和开始菜单快捷方式，启动速度比 portable 版本更快。
@@ -133,19 +154,19 @@ dist/win-unpacked/Hodo.exe
 推荐分发：
 
 ```text
-dist/Hodo-1.0.0-linux-amd64.deb
+dist/Hodo-1.0.1-linux-amd64.deb
 ```
 
 安装：
 
 ```bash
-sudo apt install ./Hodo-1.0.0-linux-amd64.deb
+sudo apt install ./Hodo-1.0.1-linux-amd64.deb
 ```
 
 或：
 
 ```bash
-sudo dpkg -i Hodo-1.0.0-linux-amd64.deb
+sudo dpkg -i Hodo-1.0.1-linux-amd64.deb
 sudo apt -f install
 ```
 
@@ -191,6 +212,16 @@ StartupNotify=true
 
 构建后的 `app/index.html` 不依赖 CDN。安装包内包含 Electron 运行时和所需前端资源，安装后可离线运行。
 
+## 预览和导出 HTML
+
+预览视图和导出的 HTML 共用同一套内容结构和视觉样式：
+
+- 页面顶部展示主标题和日期。
+- 多条目内容会生成正式目录块。
+- 右上角保留悬浮目录按钮，鼠标悬停或聚焦后显示目录面板。
+- 正文按文档阅读场景排版，减少装饰性卡片和过大的字号。
+- 附注以更轻量的说明块展示，适合补充交付说明、风险提示或备注。
+
 ## 常见问题
 
 ### Windows 任务栏仍显示旧图标
@@ -208,7 +239,7 @@ StartupNotify=true
 
 ```bash
 sudo apt remove hodo
-sudo apt install ./Hodo-1.0.0-linux-amd64.deb
+sudo apt install ./Hodo-1.0.1-linux-amd64.deb
 ```
 
 如果桌面环境仍缓存旧图标，注销并重新登录一次。
@@ -224,6 +255,7 @@ GitHub 仓库建议提交源码和构建脚本：
 - `hodo.html`
 - `electron/`
 - `scripts/`
+- `docs/images/`
 - `build/icon.svg`
 - `build/icon.ico`
 - `build/icon.png`
@@ -233,8 +265,8 @@ GitHub 仓库建议提交源码和构建脚本：
 
 安装包建议放到 GitHub Releases：
 
-- `Hodo-1.0.0-win-x64.exe`
-- `Hodo-1.0.0-linux-amd64.deb`
+- `Hodo-1.0.1-win-x64.exe`
+- `Hodo-1.0.1-linux-amd64.deb`
 
 ## 许可证
 

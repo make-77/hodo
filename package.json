@@ -1,6 +1,6 @@
 {
   "name": "hodo-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Offline desktop package for the Hodo content editor.",
   "author": {
     "name": "Hodo",
@@ -12,6 +12,7 @@
   "scripts": {
     "prepare:icons": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-icons.ps1",
     "prepare:app": "node scripts/prepare-app.mjs",
+    "capture:readme": "npm run prepare:app && electron scripts/capture-readme-screenshots.cjs",
     "build:win": "npm run prepare:icons && npm run prepare:app && electron-builder --win nsis --x64",
     "build:deb": "npm run prepare:icons && npm run prepare:app && electron-builder --linux dir --x64 && node scripts/build-deb.mjs",
     "build:all": "npm run build:win && npm run build:deb"

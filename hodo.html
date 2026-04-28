@@ -823,23 +823,27 @@ td{
 }
 
 .preview-doc{
-  max-width:1260px;
+  max-width:1040px;
   margin:0 auto;
-  color:#0f172a;
+  color:#1f2937;
   word-break:break-word;
   overflow-wrap:anywhere;
+  --doc-paper:#ffffff;
+  --doc-muted:#667085;
+  --doc-rule:#d9dee8;
+  --doc-soft:#f6f8fb;
 }
 
 .preview-doc-shell{
   display:grid;
-  grid-template-columns:minmax(0,980px);
-  gap:18px;
+  grid-template-columns:minmax(0,920px);
+  gap:16px;
   align-items:stretch;
   justify-content:center;
 }
 
 .preview-doc-shell.no-toc{
-  grid-template-columns:minmax(0,980px);
+  grid-template-columns:minmax(0,920px);
 }
 
 .preview-toc-rail{
@@ -852,17 +856,16 @@ td{
   min-width:0;
   display:flex;
   flex-direction:column;
-  gap:18px;
+  gap:16px;
 }
 
 .preview-hero{
-  border:1px solid var(--border);
-  border-radius:22px;
-  background:
-    radial-gradient(circle at top left, rgba(37,99,235,.10), transparent 34%),
-    linear-gradient(180deg,#ffffff,#fbfdff);
-  box-shadow:var(--shadow-soft);
-  padding:28px 28px 22px;
+  border:1px solid var(--doc-rule);
+  border-top:4px solid #1f2937;
+  border-radius:8px;
+  background:var(--doc-paper);
+  box-shadow:0 10px 28px rgba(15,23,42,.05);
+  padding:42px 52px 32px;
   overflow:hidden;
 }
 
@@ -872,21 +875,33 @@ td{
 
 .preview-title-card h1{
   margin:0;
-  font-size:40px;
-  line-height:1.25;
-  letter-spacing:.02em;
+  font-size:34px;
+  line-height:1.32;
+  letter-spacing:0;
+  font-weight:700;
 }
 
 .preview-date-card{
-  margin:12px auto 0;
+  margin:14px auto 0;
   width:max-content;
   max-width:100%;
-  color:#64748b;
-  border:1px solid #e6edf8;
-  background:#ffffff;
-  border-radius:999px;
-  padding:6px 16px;
-  font-size:16px;
+  color:var(--doc-muted);
+  border:0;
+  background:transparent;
+  border-radius:0;
+  padding:0;
+  font:14px/1.5 "Microsoft YaHei","微软雅黑",sans-serif;
+}
+
+.preview-date-card::before,
+.preview-date-card::after{
+  content:"";
+  display:inline-block;
+  width:32px;
+  height:1px;
+  margin:0 12px;
+  background:#cbd5e1;
+  vertical-align:middle;
 }
 
 .preview-floating-toc{
@@ -945,18 +960,16 @@ td{
   list-style:none;
   cursor:pointer;
   user-select:none;
-  border:1px solid rgba(37,99,235,.34);
-  border-radius:14px;
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0)),
-    var(--accent);
-  color:#fff;
-  box-shadow:0 12px 30px rgba(37,99,235,.30);
-  padding:10px 13px;
-  min-width:76px;
+  border:1px solid #cbd5e1;
+  border-radius:8px;
+  background:#ffffff;
+  color:#334155;
+  box-shadow:0 10px 24px rgba(15,23,42,.10);
+  padding:8px 10px;
+  min-width:64px;
   text-align:center;
-  font-size:15px;
-  font-weight:700;
+  font-size:13px;
+  font-weight:600;
   line-height:1.3;
   letter-spacing:0;
   transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
@@ -973,8 +986,8 @@ td{
 
 .preview-quick-toc summary:hover,
 .preview-quick-toc[open] summary{
-  transform:translateX(-2px);
-  box-shadow:0 16px 36px rgba(37,99,235,.34);
+  transform:translateY(-1px);
+  box-shadow:0 14px 30px rgba(15,23,42,.14);
 }
 
 .preview-quick-toc summary::-webkit-details-marker{
@@ -991,7 +1004,7 @@ td{
   max-height:min(58vh, 460px);
   overflow:auto;
   border:1px solid var(--border);
-  border-radius:16px;
+  border-radius:10px;
   background:#fff;
   box-shadow:0 16px 40px rgba(15,23,42,.18);
   padding:14px 16px;
@@ -1029,26 +1042,53 @@ td{
 }
 
 .preview-print-toc{
-  display:none;
+  display:block;
+  border:1px solid #dfe5ee;
+  border-radius:8px;
+  background:#ffffff;
+  box-shadow:0 8px 22px rgba(15,23,42,.04);
+  padding:18px 22px;
+}
+
+.preview-print-toc ol{
+  margin:0;
+  padding-left:22px;
+  color:#475569;
+  font:15px/1.8 "Microsoft YaHei","微软雅黑",sans-serif;
+}
+
+.preview-print-toc li{
+  margin:2px 0;
+}
+
+.preview-print-toc a{
+  color:#334155;
+  text-decoration:none;
+  border-bottom:1px solid transparent;
+}
+
+.preview-print-toc a:hover{
+  color:#111827;
+  border-bottom-color:#94a3b8;
 }
 
 .preview-block-title{
   display:flex;
   align-items:center;
   gap:8px;
-  margin:0 0 10px;
-  color:#334155;
-  font-size:18px;
+  margin:0 0 8px;
+  color:#111827;
+  font-size:16px;
   line-height:1.35;
   font-weight:700;
 }
 
 .preview-block-title::before{
   content:"";
-  width:4px;
-  height:18px;
+  width:3px;
+  height:16px;
   border-radius:999px;
-  background:var(--accent);
+  background:#4b5563;
 }
 
 .preview-items{
@@ -1058,66 +1098,70 @@ td{
   padding:0;
   display:flex;
   flex-direction:column;
-  gap:18px;
+  gap:16px;
 }
 
 .preview-item{
   counter-increment:item;
-  border:1px solid var(--border);
-  border-radius:22px;
+  border:1px solid #dfe5ee;
+  border-radius:8px;
   background:#ffffff;
-  box-shadow:var(--shadow-soft);
-  padding:20px;
+  box-shadow:0 8px 22px rgba(15,23,42,.04);
+  padding:0;
+  overflow:hidden;
   scroll-margin-top:92px;
 }
 
 .preview-item-head{
   display:grid;
   grid-template-columns:auto 1fr;
-  gap:14px;
+  gap:12px;
   align-items:start;
-  margin-bottom:14px;
+  margin:0;
+  padding:18px 22px 14px;
+  border-bottom:1px solid #eef2f7;
+  background:#fcfcfd;
 }
 
 .preview-index{
-  min-width:46px;
-  height:46px;
-  border-radius:15px;
-  background:var(--accent-soft);
-  color:var(--accent);
+  min-width:42px;
+  height:auto;
+  padding-top:2px;
+  border-radius:0;
+  background:transparent;
+  color:#6b7280;
   display:flex;
   align-items:center;
-  justify-content:center;
-  font-size:22px;
-  font-weight:700;
+  justify-content:flex-start;
+  font:600 17px/1.4 "Microsoft YaHei","微软雅黑",sans-serif;
   font-variant-numeric:tabular-nums;
 }
 
 .preview-index::before{
-  content:counter(item);
+  content:counter(item, decimal-leading-zero);
 }
 
 .preview-title{
   margin:0;
-  font-size:32px;
-  line-height:1.25;
+  color:#111827;
+  font-size:22px;
+  line-height:1.4;
   font-weight:700;
 }
 
 .preview-time{
-  margin-top:8px;
+  margin-top:6px;
   display:inline-flex;
-  color:#64748b;
-  background:#f8fafc;
-  border:1px solid #e6edf8;
-  border-radius:999px;
-  padding:4px 12px;
-  font-family:"Courier New",Courier,monospace;
-  font-size:16px;
+  color:var(--doc-muted);
+  background:transparent;
+  border:0;
+  border-radius:0;
+  padding:0;
+  font:13px/1.5 "Courier New",Courier,monospace;
 }
 
 .preview-body-block{
-  margin-top:12px;
+  margin-top:0;
 }
 
 .preview-body-block:first-child{
@@ -1126,69 +1170,111 @@ td{
 
 .preview-body-block > .preview-section-label,
 .preview-remarks-block > .preview-section-label{
-  margin:0 0 8px;
-  padding-left:2px;
+  margin:0 0 6px;
+  padding-left:0;
   color:#475569;
-  font-size:15px;
+  font:600 14px/1.35 "Microsoft YaHei","微软雅黑",sans-serif;
   line-height:1.35;
-  font-weight:700;
 }
 
 .preview-section{
-  border:1px solid #e8edf5;
-  border-radius:18px;
-  background:#fbfdff;
-  padding:16px;
+  border:0;
+  border-radius:0;
+  background:#ffffff;
+  padding:20px 22px 22px;
 }
 
 .preview-body{
   font-family:"STZhongsong","华文中宋","Songti SC","SimSun",serif;
-  font-size:24px;
-  line-height:1.85;
+  font-size:18px;
+  line-height:1.9;
+  color:#1f2937;
+}
+
+.preview-body :where(p){
+  margin:0 0 12px;
+}
+
+.preview-body :where(p:last-child){
+  margin-bottom:0;
+}
+
+.preview-body :where(h1,h2,h3,h4){
+  margin:20px 0 10px;
+  color:#111827;
+  line-height:1.35;
+}
+
+.preview-body :where(ul,ol){
+  margin:8px 0 14px;
+  padding-left:1.4em;
+}
+
+.preview-body :where(blockquote){
+  margin:14px 0;
+  padding:10px 14px;
+  border-left:3px solid #9ca3af;
+  background:#f9fafb;
+  color:#4b5563;
 }
 
 .preview-remarks-block{
-  margin-top:12px;
+  margin:0;
+  border-top:1px solid #eef2f7;
+  background:#fcfcfd;
+  padding:14px 22px 18px;
 }
 
 .preview-remark-list{
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:8px;
   margin-top:8px;
 }
 
 .preview-remark{
-  border:1px solid #e6edf8;
-  border-left:4px solid #bfdbfe;
-  border-radius:14px;
+  border:0;
+  border-left:3px solid #94a3b8;
+  border-radius:0 6px 6px 0;
   background:#f8fafc;
-  padding:12px 14px;
-  font-size:16px;
+  padding:10px 12px;
+  font-size:14px;
   line-height:1.8;
   font-family:"FangSong","仿宋","FangSong_GB2312","Songti SC","SimSun",serif;
 }
 
 .preview-single{
-  border:1px solid var(--border);
-  border-radius:22px;
+  border:1px solid #dfe5ee;
+  border-radius:8px;
   background:#fff;
-  box-shadow:var(--shadow-soft);
-  padding:20px;
+  box-shadow:0 8px 22px rgba(15,23,42,.04);
+  padding:0;
+  overflow:hidden;
+}
+
+.preview-single .preview-section{
+  padding:28px 34px;
+}
+
+.preview-single .preview-remarks-block{
+  padding:14px 34px 24px;
 }
 
 .preview-doc :where(img,video,iframe){
   max-width:100%;
   height:auto;
   display:block;
-  border-radius:10px;
+  margin:16px auto;
+  border-radius:6px;
 }
 
 .preview-doc :where(table){
   display:block;
+  width:100%;
   max-width:100%;
   overflow-x:auto;
   border-collapse:collapse;
+  margin:14px 0;
 }
 
 .preview-doc :not(pre):not(code) a{
@@ -1338,14 +1424,14 @@ div[class*="w-e-"][style*="position: fixed"]{
 
 @media (max-width:900px){
   .preview-doc{
-    max-width:980px;
+    max-width:920px;
   }
 
   .preview-doc-shell,
   .preview-doc-shell.no-toc{
     display:flex;
     flex-direction:column;
-    gap:18px;
+    gap:16px;
   }
 
   .preview-toc-rail{
@@ -1406,6 +1492,20 @@ div[class*="w-e-"][style*="position: fixed"]{
     font-size:28px;
   }
 
+  .preview-hero{
+    padding:30px 22px 24px;
+  }
+
+  .preview-date-card::before,
+  .preview-date-card::after{
+    width:18px;
+    margin:0 8px;
+  }
+
+  .preview-print-toc{
+    padding:16px;
+  }
+
   .item-top{
     grid-template-columns:1fr;
   }
@@ -1415,15 +1515,28 @@ div[class*="w-e-"][style*="position: fixed"]{
   }
 
   .preview-item-head{
-    grid-template-columns:1fr;
+    grid-template-columns:auto 1fr;
+    padding:16px;
   }
 
-  .preview-index{
-    width:46px;
+  .preview-section{
+    padding:18px 16px;
+  }
+
+  .preview-single .preview-section{
+    padding:22px 18px;
+  }
+
+  .preview-single .preview-remarks-block{
+    padding:14px 18px 20px;
   }
 
   .preview-title{
-    font-size:26px;
+    font-size:21px;
+  }
+
+  .preview-body{
+    font-size:17px;
   }
 
   .preview-floating-toc{
@@ -2086,7 +2199,7 @@ div[class*="w-e-"][style*="position: fixed"]{
 
     return `
       <section class="preview-remarks-block">
-        <div class="preview-section-label">备注</div>
+        <div class="preview-section-label">附注</div>
         <div class="preview-remark-list">
           ${list.map(item => `
             <div class="preview-remark copyable" data-copy-region="remark" data-copy-format="html" data-copy-label="复制备注">
@@ -2095,6 +2208,21 @@ div[class*="w-e-"][style*="position: fixed"]{
           `).join('')}
         </div>
       </section>
+    `;
+  }
+
+  function renderPreviewHero(pageTitle, pageDate){
+    const date = pageDate
+      ? `<div class="preview-date-card copyable" data-copy-region="date" data-copy-format="outer" data-copy-label="复制日期">${pageDate}</div>`
+      : '';
+
+    return `
+      <header class="preview-hero">
+        <div class="preview-title-card copyable" data-copy-region="title" data-copy-format="outer" data-copy-label="复制标题">
+          <h1>${pageTitle}</h1>
+        </div>
+        ${date}
+      </header>
     `;
   }
 
@@ -2108,12 +2236,7 @@ div[class*="w-e-"][style*="position: fixed"]{
       return `
         <article class="preview-doc-shell no-toc">
           <main class="preview-main-flow">
-            <header class="preview-hero">
-              <div class="preview-title-card copyable" data-copy-region="title" data-copy-format="outer" data-copy-label="复制标题">
-                <h1>${pageTitle}</h1>
-              </div>
-              <div class="preview-date-card copyable" data-copy-region="date" data-copy-format="outer" data-copy-label="复制日期">${pageDate}</div>
-            </header>
+            ${renderPreviewHero(pageTitle, pageDate)}
 
             <section class="preview-single">
               <section class="preview-body-block">
@@ -2135,12 +2258,7 @@ div[class*="w-e-"][style*="position: fixed"]{
       return `
         <article class="preview-doc-shell no-toc">
           <main class="preview-main-flow">
-            <header class="preview-hero">
-              <div class="preview-title-card copyable" data-copy-region="title" data-copy-format="outer" data-copy-label="复制标题">
-                <h1>${pageTitle}</h1>
-              </div>
-              <div class="preview-date-card copyable" data-copy-region="date" data-copy-format="outer" data-copy-label="复制日期">${pageDate}</div>
-            </header>
+            ${renderPreviewHero(pageTitle, pageDate)}
             <div class="empty-hint">暂无条目，请先添加内容。</div>
           </main>
         </article>
@@ -2180,18 +2298,13 @@ div[class*="w-e-"][style*="position: fixed"]{
 
     return `
       <article class="preview-doc-shell">
-        <nav class="preview-print-toc" aria-label="打印目录">
-          <div class="preview-block-title">目录</div>
-          <ol>${toc}</ol>
-        </nav>
-
         <main class="preview-main-flow">
-          <header class="preview-hero">
-            <div class="preview-title-card copyable" data-copy-region="title" data-copy-format="outer" data-copy-label="复制标题">
-              <h1>${pageTitle}</h1>
-            </div>
-            <div class="preview-date-card copyable" data-copy-region="date" data-copy-format="outer" data-copy-label="复制日期">${pageDate}</div>
-          </header>
+          ${renderPreviewHero(pageTitle, pageDate)}
+
+          <nav class="preview-print-toc" aria-label="目录">
+            <div class="preview-block-title">目录</div>
+            <ol>${toc}</ol>
+          </nav>
 
           <ol class="preview-items">${list}</ol>
         </main>
@@ -2691,12 +2804,12 @@ div[class*="w-e-"][style*="position: fixed"]{
 
     return `
       :root{
-        --bg:#f5f7fb;
+        --bg:#f3f4f6;
         --text:#0f172a;
-        --muted:#64748b;
-        --accent:#2563eb;
-        --accent-soft:#eef4ff;
-        --border:#e5e7ef;
+        --muted:#667085;
+        --accent:#334155;
+        --accent-soft:#f6f8fb;
+        --border:#d9dee8;
         --shadow-soft:0 8px 24px rgba(15,23,42,.05);
         --preview-toc-top:24px;
         ${codeVars}
@@ -2712,29 +2825,33 @@ div[class*="w-e-"][style*="position: fixed"]{
       }
 
       .page{
-        max-width:1320px;
+        max-width:1080px;
         margin:0 auto;
-        padding:28px;
+        padding:32px 20px;
       }
 
       .preview-doc{
-        max-width:1260px;
+        max-width:1040px;
         margin:0 auto;
-        color:#0f172a;
+        color:#1f2937;
         word-break:break-word;
         overflow-wrap:anywhere;
+        --doc-paper:#ffffff;
+        --doc-muted:#667085;
+        --doc-rule:#d9dee8;
+        --doc-soft:#f6f8fb;
       }
 
       .preview-doc-shell{
         display:grid;
-        grid-template-columns:minmax(0,980px);
-        gap:18px;
+        grid-template-columns:minmax(0,920px);
+        gap:16px;
         align-items:stretch;
         justify-content:center;
       }
 
       .preview-doc-shell.no-toc{
-        grid-template-columns:minmax(0,980px);
+        grid-template-columns:minmax(0,920px);
       }
 
       .preview-toc-rail{
@@ -2747,17 +2864,16 @@ div[class*="w-e-"][style*="position: fixed"]{
         min-width:0;
         display:flex;
         flex-direction:column;
-        gap:18px;
+        gap:16px;
       }
 
       .preview-hero{
-        border:1px solid var(--border);
-        border-radius:22px;
-        background:
-          radial-gradient(circle at top left, rgba(37,99,235,.10), transparent 34%),
-          linear-gradient(180deg,#ffffff,#fbfdff);
-        box-shadow:var(--shadow-soft);
-        padding:28px 28px 22px;
+        border:1px solid var(--doc-rule);
+        border-top:4px solid #1f2937;
+        border-radius:8px;
+        background:var(--doc-paper);
+        box-shadow:0 10px 28px rgba(15,23,42,.05);
+        padding:42px 52px 32px;
         overflow:hidden;
       }
 
@@ -2765,21 +2881,33 @@ div[class*="w-e-"][style*="position: fixed"]{
 
       .preview-title-card h1{
         margin:0;
-        font-size:40px;
-        line-height:1.25;
-        letter-spacing:.02em;
+        font-size:34px;
+        line-height:1.32;
+        letter-spacing:0;
+        font-weight:700;
       }
 
       .preview-date-card{
-        margin:12px auto 0;
+        margin:14px auto 0;
         width:max-content;
         max-width:100%;
-        color:#64748b;
-        border:1px solid #e6edf8;
-        background:#ffffff;
-        border-radius:999px;
-        padding:6px 16px;
-        font-size:16px;
+        color:var(--doc-muted);
+        border:0;
+        background:transparent;
+        border-radius:0;
+        padding:0;
+        font:14px/1.5 "Microsoft YaHei","微软雅黑",sans-serif;
+      }
+
+      .preview-date-card::before,
+      .preview-date-card::after{
+        content:"";
+        display:inline-block;
+        width:32px;
+        height:1px;
+        margin:0 12px;
+        background:#cbd5e1;
+        vertical-align:middle;
       }
 
       .preview-floating-toc{
@@ -2836,18 +2964,16 @@ div[class*="w-e-"][style*="position: fixed"]{
         list-style:none;
         cursor:pointer;
         user-select:none;
-        border:1px solid rgba(37,99,235,.34);
-        border-radius:14px;
-        background:
-          linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0)),
-          var(--accent);
-        color:#fff;
-        box-shadow:0 12px 30px rgba(37,99,235,.30);
-        padding:10px 13px;
-        min-width:76px;
+        border:1px solid #cbd5e1;
+        border-radius:8px;
+        background:#ffffff;
+        color:#334155;
+        box-shadow:0 10px 24px rgba(15,23,42,.10);
+        padding:8px 10px;
+        min-width:64px;
         text-align:center;
-        font-size:15px;
-        font-weight:700;
+        font-size:13px;
+        font-weight:600;
         line-height:1.3;
         letter-spacing:0;
         transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
@@ -2864,8 +2990,8 @@ div[class*="w-e-"][style*="position: fixed"]{
 
       .preview-quick-toc summary:hover,
       .preview-quick-toc[open] summary{
-        transform:translateX(-2px);
-        box-shadow:0 16px 36px rgba(37,99,235,.34);
+        transform:translateY(-1px);
+        box-shadow:0 14px 30px rgba(15,23,42,.14);
       }
 
       .preview-quick-toc summary::-webkit-details-marker{
@@ -2882,7 +3008,7 @@ div[class*="w-e-"][style*="position: fixed"]{
         max-height:min(58vh, 460px);
         overflow:auto;
         border:1px solid var(--border);
-        border-radius:16px;
+        border-radius:10px;
         background:#fff;
         box-shadow:0 16px 40px rgba(15,23,42,.18);
         padding:14px 16px;
@@ -2918,26 +3044,51 @@ div[class*="w-e-"][style*="position: fixed"]{
       }
 
       .preview-print-toc{
-        display:none;
+        display:block;
+        border:1px solid #dfe5ee;
+        border-radius:8px;
+        background:#ffffff;
+        box-shadow:0 8px 22px rgba(15,23,42,.04);
+        padding:18px 22px;
+      }
+
+      .preview-print-toc ol{
+        margin:0;
+        padding-left:22px;
+        color:#475569;
+        font:15px/1.8 "Microsoft YaHei","微软雅黑",sans-serif;
+      }
+
+      .preview-print-toc li{margin:2px 0}
+
+      .preview-print-toc a{
+        color:#334155;
+        text-decoration:none;
+        border-bottom:1px solid transparent;
+      }
+
+      .preview-print-toc a:hover{
+        color:#111827;
+        border-bottom-color:#94a3b8;
       }
 
       .preview-block-title{
         display:flex;
         align-items:center;
         gap:8px;
-        margin:0 0 10px;
-        color:#334155;
-        font-size:18px;
+        margin:0 0 8px;
+        color:#111827;
+        font-size:16px;
         line-height:1.35;
         font-weight:700;
       }
 
       .preview-block-title::before{
         content:"";
-        width:4px;
-        height:18px;
+        width:3px;
+        height:16px;
         border-radius:999px;
-        background:var(--accent);
+        background:#4b5563;
       }
 
       .preview-items{
@@ -2947,128 +3098,171 @@ div[class*="w-e-"][style*="position: fixed"]{
         padding:0;
         display:flex;
         flex-direction:column;
-        gap:18px;
+        gap:16px;
       }
 
       .preview-item{
         counter-increment:item;
-        border:1px solid var(--border);
-        border-radius:22px;
+        border:1px solid #dfe5ee;
+        border-radius:8px;
         background:#ffffff;
-        box-shadow:var(--shadow-soft);
-        padding:20px;
+        box-shadow:0 8px 22px rgba(15,23,42,.04);
+        padding:0;
+        overflow:hidden;
         scroll-margin-top:24px;
       }
 
       .preview-item-head{
         display:grid;
         grid-template-columns:auto 1fr;
-        gap:14px;
+        gap:12px;
         align-items:start;
-        margin-bottom:14px;
+        margin:0;
+        padding:18px 22px 14px;
+        border-bottom:1px solid #eef2f7;
+        background:#fcfcfd;
       }
 
       .preview-index{
-        min-width:46px;
-        height:46px;
-        border-radius:15px;
-        background:var(--accent-soft);
-        color:var(--accent);
+        min-width:42px;
+        height:auto;
+        padding-top:2px;
+        border-radius:0;
+        background:transparent;
+        color:#6b7280;
         display:flex;
         align-items:center;
-        justify-content:center;
-        font-size:22px;
-        font-weight:700;
+        justify-content:flex-start;
+        font:600 17px/1.4 "Microsoft YaHei","微软雅黑",sans-serif;
         font-variant-numeric:tabular-nums;
       }
 
-      .preview-index::before{content:counter(item)}
+      .preview-index::before{content:counter(item, decimal-leading-zero)}
 
       .preview-title{
         margin:0;
-        font-size:32px;
-        line-height:1.25;
+        color:#111827;
+        font-size:22px;
+        line-height:1.4;
         font-weight:700;
       }
 
       .preview-time{
-        margin-top:8px;
+        margin-top:6px;
         display:inline-flex;
-        color:#64748b;
-        background:#f8fafc;
-        border:1px solid #e6edf8;
-        border-radius:999px;
-        padding:4px 12px;
-        font-family:"Courier New",Courier,monospace;
-        font-size:16px;
+        color:var(--doc-muted);
+        background:transparent;
+        border:0;
+        border-radius:0;
+        padding:0;
+        font:13px/1.5 "Courier New",Courier,monospace;
       }
 
-      .preview-body-block{margin-top:12px}
+      .preview-body-block{margin-top:0}
       .preview-body-block:first-child{margin-top:0}
 
       .preview-body-block > .preview-section-label,
       .preview-remarks-block > .preview-section-label{
-        margin:0 0 8px;
-        padding-left:2px;
+        margin:0 0 6px;
+        padding-left:0;
         color:#475569;
-        font-size:15px;
+        font:600 14px/1.35 "Microsoft YaHei","微软雅黑",sans-serif;
         line-height:1.35;
-        font-weight:700;
       }
 
       .preview-section{
-        border:1px solid #e8edf5;
-        border-radius:18px;
-        background:#fbfdff;
-        padding:16px;
+        border:0;
+        border-radius:0;
+        background:#ffffff;
+        padding:20px 22px 22px;
       }
 
       .preview-body{
         font-family:"STZhongsong","华文中宋","Songti SC","SimSun",serif;
-        font-size:24px;
-        line-height:1.85;
+        font-size:18px;
+        line-height:1.9;
+        color:#1f2937;
       }
 
-      .preview-remarks-block{margin-top:12px}
+      .preview-body :where(p){margin:0 0 12px}
+      .preview-body :where(p:last-child){margin-bottom:0}
+
+      .preview-body :where(h1,h2,h3,h4){
+        margin:20px 0 10px;
+        color:#111827;
+        line-height:1.35;
+      }
+
+      .preview-body :where(ul,ol){
+        margin:8px 0 14px;
+        padding-left:1.4em;
+      }
+
+      .preview-body :where(blockquote){
+        margin:14px 0;
+        padding:10px 14px;
+        border-left:3px solid #9ca3af;
+        background:#f9fafb;
+        color:#4b5563;
+      }
+
+      .preview-remarks-block{
+        margin:0;
+        border-top:1px solid #eef2f7;
+        background:#fcfcfd;
+        padding:14px 22px 18px;
+      }
 
       .preview-remark-list{
         display:flex;
         flex-direction:column;
-        gap:10px;
+        gap:8px;
         margin-top:8px;
       }
 
       .preview-remark{
-        border:1px solid #e6edf8;
-        border-left:4px solid #bfdbfe;
-        border-radius:14px;
+        border:0;
+        border-left:3px solid #94a3b8;
+        border-radius:0 6px 6px 0;
         background:#f8fafc;
-        padding:12px 14px;
-        font-size:16px;
+        padding:10px 12px;
+        font-size:14px;
         line-height:1.8;
         font-family:"FangSong","仿宋","FangSong_GB2312","Songti SC","SimSun",serif;
       }
 
       .preview-single{
-        border:1px solid var(--border);
-        border-radius:22px;
+        border:1px solid #dfe5ee;
+        border-radius:8px;
         background:#fff;
-        box-shadow:var(--shadow-soft);
-        padding:20px;
+        box-shadow:0 8px 22px rgba(15,23,42,.04);
+        padding:0;
+        overflow:hidden;
+      }
+
+      .preview-single .preview-section{
+        padding:28px 34px;
+      }
+
+      .preview-single .preview-remarks-block{
+        padding:14px 34px 24px;
       }
 
       .preview-doc :where(img,video,iframe){
         max-width:100%;
         height:auto;
         display:block;
-        border-radius:10px;
+        margin:16px auto;
+        border-radius:6px;
       }
 
       .preview-doc :where(table){
         display:block;
+        width:100%;
         max-width:100%;
         overflow-x:auto;
         border-collapse:collapse;
+        margin:14px 0;
       }
 
       table,th,td{border:1px solid #e5e7eb}
@@ -3205,12 +3399,12 @@ div[class*="w-e-"][style*="position: fixed"]{
 
       @media (max-width:900px){
         .page{max-width:1040px}
-        .preview-doc{max-width:980px}
+        .preview-doc{max-width:920px}
         .preview-doc-shell,
         .preview-doc-shell.no-toc{
           display:flex;
           flex-direction:column;
-          gap:18px;
+          gap:16px;
         }
         .preview-toc-rail{
           order:-1;
@@ -3258,9 +3452,22 @@ div[class*="w-e-"][style*="position: fixed"]{
           max-height:min(56vh, 430px);
         }
         .preview-title-card h1{font-size:28px}
-        .preview-item-head{grid-template-columns:1fr}
-        .preview-index{width:46px}
-        .preview-title{font-size:26px}
+        .preview-hero{padding:30px 22px 24px}
+        .preview-date-card::before,
+        .preview-date-card::after{
+          width:18px;
+          margin:0 8px;
+        }
+        .preview-print-toc{padding:16px}
+        .preview-item-head{
+          grid-template-columns:auto 1fr;
+          padding:16px;
+        }
+        .preview-section{padding:18px 16px}
+        .preview-single .preview-section{padding:22px 18px}
+        .preview-single .preview-remarks-block{padding:14px 18px 20px}
+        .preview-title{font-size:21px}
+        .preview-body{font-size:17px}
       }
     `;
   }
